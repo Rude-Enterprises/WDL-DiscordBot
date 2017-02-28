@@ -244,4 +244,4 @@ if __name__ == '__main__':
     for extension in initial_extensions:
         bot.load_extension(extension)  # This adds the cogs listed in initial_extensions to the bot
 
-    bot.run("username", "pass")
+    bot.run("user", "pass")
