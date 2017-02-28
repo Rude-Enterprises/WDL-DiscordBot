@@ -58,6 +58,8 @@ map_rat_team = pd.read_excel(workbook, "Map RAT by Team", index_col=[0])
 
 print(all_rounds.axes)
 
+print("hi")
+
 all_time_playoff.name = "All time Playoffs"
 season7.name = "Season 7"
 season6.name = "Season 6"
