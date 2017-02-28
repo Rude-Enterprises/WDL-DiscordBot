@@ -1,6 +1,6 @@
 from discord.ext import commands
 
-class misc:
+class Misc:
     def __init__(self, bot):  # This allows the cog to access the bot, and its functions
         self.bot = bot
 
@@ -16,4 +16,4 @@ class misc:
 
 
 def setup(bot):
-    bot.add_cog(misc(bot))
+    bot.add_cog(Misc(bot))
