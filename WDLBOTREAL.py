@@ -9,7 +9,11 @@ import urllib.request
 import datetime
 import asyncio
 import re
+import sys
+import os
 from pytime import pytime
+
+initial_extensions = ['misc']
 
 
 bot = commands.Bot(command_prefix="!", description="Hello I am a bot ! beepboop.")
@@ -89,13 +93,6 @@ async def on_ready():
 async def game_time():
     pass
 
-#WDL Bot FAQ
-@bot.command()
-async def help():
-    help_text = """Hello I am a bot. beep boop
-                          \nCheck my FAQ: https://www.dropbox.com/s/ioj7hnh42n2wdh8/WDLSTATFAQ.txt?dl=0"""
-    await bot.say(help_text)
-    
 @bot.event
 async def on_message(message):
     players_for_priv = 6
@@ -185,13 +182,6 @@ async def standings():
     standings_table = wdl_standings[0][["PTS", "PF", "PA"]]
     await bot.say("```WDL Season 7 Standings\n\n{}```".format(str(standings_table)))
 
-#wdl forums stats
-@bot.command()
-async def more():
-    await bot.say("More cool stats can be found here: http://doomleague.org/forums/index.php?board=8.0")
-
-
-
 @bot.command()
 async def randstat():
     randsheet = sheet_set[random.randint(0, 8)]
@@ -247,4 +237,11 @@ async def map(num: float):
              map_wad, map_games, map_rat_round, map_frags_round, map_points_round))
 
 
-bot.run("wolfeman312@gmail.com", "itchyshorts99")
+if __name__ == '__main__':
+
+    sys.path.insert(1, os.getcwd() + "/cogs/")  # this allows the cogs in the cogs folder to be loaded
+
+    for extension in initial_extensions:
+        bot.load_extension(extension)  # This adds the cogs listed in initial_extensions to the bot
+
+    bot.run("wolfeman312@gmail.com", "itchyshorts99")
