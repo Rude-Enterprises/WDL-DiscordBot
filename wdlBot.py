@@ -11,7 +11,7 @@ import sys
 import os
 from pytime import pytime
 
-initial_extensions = ["misc", "stats"]
+initial_extensions = ["misc", "stats", "webcmds"]
 
 bot = commands.Bot(command_prefix="!", description="Hello I am a bot ! beepboop.")
 bot.remove_command("help")
@@ -29,8 +29,10 @@ rege_test = r"Gametime:"
 
 #FINDS ALL GAMETIME STRINGS FROM WDL.ORG
 game_times = soup.find_all(text=re.compile(rege_str))
+for all in game_times:
+    pass
 
-print(game_times)
+print(game_times[:3])
 
 #I FORGET WHY THIS IS HERE LOL
 pd.set_option('display.multi_sparse', True)
