@@ -12,7 +12,7 @@
 
 !standings - returns current WDL season standings
 
-!more - more stats on the WDL 	  
+!more - more stats on the WDL
 
 #Pickup Commands
 
