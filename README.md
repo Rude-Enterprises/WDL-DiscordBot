@@ -13,7 +13,6 @@ WDL Bot interacts with **Jwarrier's** comprehensive stats of the WDL, the public
 
 # License
 
-
 Copyright (C) 2017 RUDE ENTERPRISES.
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License version 3 as published by
