@@ -1,7 +1,5 @@
-import discord
-import libraries as lb
 from discord.ext import commands
-import random
+import libraries as lb
 import pandas as pd
 import numpy as np
 import bs4 as bs
@@ -13,12 +11,10 @@ import sys
 import os
 from pytime import pytime
 
-initial_extensions = ['misc']
-
+initial_extensions = ["misc", "stats"]
 
 bot = commands.Bot(command_prefix="!", description="Hello I am a bot ! beepboop.")
 bot.remove_command("help")
-
 
 sauce = urllib.request.urlopen("http://doomleague.org/").read()
 soup = bs.BeautifulSoup(sauce, "lxml")
@@ -27,14 +23,18 @@ tday = datetime.datetime.today()
 
 print(tday)
 
+#REGEX FOR GAMETIMES ON WDL.ORG
 rege_str = r"Gametime:\s[\w]+,\s[\w]{3}\s[0-9]+\s@\s[0-9]+:[0-9][0-9]PM\sEST"
 rege_test = r"Gametime:"
 
+#FINDS ALL GAMETIME STRINGS FROM WDL.ORG
 game_times = soup.find_all(text=re.compile(rege_str))
 
 print(game_times)
 
+#I FORGET WHY THIS IS HERE LOL
 pd.set_option('display.multi_sparse', True)
+
 #all sheets to be used from Jwarrier's wdlstatsv4 read with Pandas
 workbook = pd.ExcelFile("C:/Users/Jesse/PycharmProjects/pandas/WDLSTATSv4.xlsx")
 player_totals = pd.read_excel(workbook, "PT Player Totals")
@@ -54,32 +54,8 @@ map_data = pd.read_excel(workbook, "Map Data", index_col=[11])
 map_rat_player = pd.read_excel(workbook, "Map RAT by Player", index_col=[1])
 map_rat_team = pd.read_excel(workbook, "Map RAT by Team", index_col=[0])
 
-
-
 print(all_rounds.axes)
 
-print("hi")
-
-all_time_playoff.name = "All time Playoffs"
-season7.name = "Season 7"
-season6.name = "Season 6"
-season5.name = "Season 5"
-season4.name = "Season 4"
-season3.name = "Season 3"
-season2.name = "Season 2"
-season1.name = "Season 1"
-team_stats.name = "Team Stats"
-
-sheet_set = (all_time_playoff,
-             season7,
-             season6,
-             season5,
-             season4,
-             season3,
-             season2,
-             season1,
-             team_stats
-             )
 
 player_set = set()
 
@@ -177,67 +153,6 @@ async def on_message(message):
     await bot.process_commands(message)
 
 
-#Standings Table from WDL.org read with Pandas
-@bot.command()
-async def standings():
-    wdl_standings = pd.read_html("http://doomleague.org", index_col=0)
-    standings_table = wdl_standings[0][["PTS", "PF", "PA"]]
-    await bot.say("```WDL Season 7 Standings\n\n{}```".format(str(standings_table)))
-
-@bot.command()
-async def randstat():
-    randsheet = sheet_set[random.randint(0, 8)]
-    index_length = len(randsheet.index)
-    col_length = len(randsheet.columns)
-    player_or_team_id = randsheet.index[random.randint(1, (index_length - 1))]
-    stat_name = randsheet.columns[random.randint(0, (col_length - 1))]
-
-    if randsheet.name == "Team Stats":
-        random_team_stat = randsheet.loc[player_or_team_id, stat_name]
-        team_str = str(lb.team_dict[player_or_team_id])
-        team_str_season = team_str[4]
-        team_str_3char = team_str[:3]
-        team_str_3char_exc = "!" + team_str_3char
-        team_str_final = team_str_3char_exc.lower()
-        await bot.say("```Season {}\n{} had {} {}```".format(team_str_season,
-                        lb.team_dict_two[team_str_final], random_team_stat, stat_name))
-    else:
-        random_stat = randsheet.loc[player_or_team_id, stat_name]
-        await bot.say("```{}\n{} had {} {}```".format(randsheet.name,
-                        player_or_team_id, random_stat, stat_name))
-
-@bot.command()
-async def top(num: int, statname: str):
-    stat = lb.stat_dict[statname.lower()]
-    rounded_sheet = all_rounds.round(decimals=2)
-    #top_sheet = all_rounds.nlargest(num, stat)
-    #stat = lb.stat_dict[statname.lower()]
-    top_sheet = rounded_sheet.sort_values(stat, ascending=False).head(num)[[stat]]
-    #top_sheet_rounded = top_sheet.round(decimals=2)
-    await bot.say("""```Single Round Performances\ntop {}\
- {} all time: \n \n {}```""".format(num, stat, top_sheet))
-
-@bot.command()
-async def map(num: float):
-    if num not in map_data.index:
-        num_int = int(num)
-        await bot.say("```Map {} has not been played in the WDL :(```".format(num_int))
-
-    map_name = map_data.loc[num, "Map Name"]
-    map_wad = map_data.loc[num, "Source Wad"]
-    map_rat = map_data.loc[num, "RAT"]
-    map_rat_round = round(map_rat, 2)
-    map_frags = map_data.loc[num, "FRG"]
-    map_frags_round = round(map_frags, 2)
-    map_games = map_data.loc[num, "GP"]
-    map_points_pergame = map_data.loc[num, "POINTS"]
-    map_points_round = round(map_points_pergame, 2)
-
-    if num in map_data.index:
-        await bot.say("""**{}** from {} \n\n{} games taken place \nAverage RAT - {}\
-\nAvg Frags per player - {} \nAvg Points per game - {}""".format(map_name,
-             map_wad, map_games, map_rat_round, map_frags_round, map_points_round))
-
 
 if __name__ == '__main__':
 
@@ -246,4 +161,4 @@ if __name__ == '__main__':
     for extension in initial_extensions:
         bot.load_extension(extension)  # This adds the cogs listed in initial_extensions to the bot
 
-    bot.run("user", "pass")
+    bot.run("USER", "PASS")
