@@ -11,7 +11,7 @@ class Misc:
     @commands.command()
     async def help(self):
         help_text = """Hello I am a bot. beep boop
-                                  \nCheck my FAQ: https://github.com/jesswolfe/WDL-DiscordBot/blob/master/commands.md"""
+                                  \nCheck my FAQ: https://github.com/Rude-Enterprises/WDL-DiscordBot/blob/master/commands.md"""
         await self.bot.say(help_text)
 
 
