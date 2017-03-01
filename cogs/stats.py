@@ -3,6 +3,7 @@ import pandas as pd
 import random
 import libraries as lb
 import wdlBot as wdl
+import re
 
 wdl.all_time_playoff.name = "All time Playoffs"
 wdl.season7.name = "Season 7"
@@ -26,15 +27,10 @@ sheet_set = (wdl.all_time_playoff,
              )
 
 
+
 class Stats():
     def __init__(self, bot):
         self.bot = bot
-
-    @commands.command()
-    async def standings(self):
-        wdl_standings = pd.read_html("http://doomleague.org", index_col=0)
-        standings_table = wdl_standings[0][["PTS", "PF", "PA"]]
-        await self.bot.say("```WDL Season 7 Standings\n\n{}```".format(str(standings_table)))
 
     @commands.command()
     async def randstat(self):
@@ -69,6 +65,14 @@ class Stats():
         # top_sheet_rounded = top_sheet.round(decimals=2)
         await self.bot.say("""```Single Round Performances\ntop {}\
      {} all time: \n \n {}```""".format(num, stat, top_sheet))
+
+    #@commands.command()
+    #async def bott(self, num: int, statname: str):
+    #    stat = lb.stat_dict[statname.lower()]
+    #    rounded_sheet = wdl.all_rounds.round(decimals=2)
+    #    top_sheet = rounded_sheet.sort_values(stat).head(num)[[stat]]
+    #    await self.bot.say("""```Single Round Performances\nbot {}\
+    #         {} all time: \n \n {}```""".format(num, stat, top_sheet))
 
     @commands.command()
     async def map(self, num: float):
