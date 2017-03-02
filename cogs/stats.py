@@ -76,6 +76,17 @@ class Stats():
                                                                                             num, stat, bot_sheet))
 
     @commands.command()
+    async def avg(self, statname: str):
+        stat = lb.stat_dict[statname.lower()]
+        try:
+            stat_mean = wdl.all_rounds[stat].mean()
+            stat_mean_round = round(stat_mean, 2)
+            await self.bot.say("All time average {} per round: {}".format(stat, stat_mean_round))
+
+        except KeyError:
+            pass
+
+    @commands.command()
     async def map(self, num: float):
         if num not in wdl.map_data.index:
             num_int = int(num)
