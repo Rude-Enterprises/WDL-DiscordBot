@@ -71,9 +71,9 @@ class Stats():
         stat = lb.stat_dict[statname.lower()]
         rounded_sheet = wdl.all_rounds.round(decimals=2)
         rounded_sheet_dropna = rounded_sheet.dropna(axis=0, how="any")
-        top_sheet = rounded_sheet_dropna.sort_values(stat).head(num)[[stat]]
+        bot_sheet = rounded_sheet_dropna.sort_values(stat).head(num)[[stat]]
         await self.bot.say("""```Single Round Performances\nbottom {} {} all time: \n \n {}```""".format(
-                                                                                            num, stat, top_sheet))
+                                                                                            num, stat, bot_sheet))
 
     @commands.command()
     async def map(self, num: float):
