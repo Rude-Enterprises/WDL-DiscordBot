@@ -63,16 +63,17 @@ class Stats():
         # stat = lb.stat_dict[statname.lower()]
         top_sheet = rounded_sheet.sort_values(stat, ascending=False).head(num)[[stat]]
         # top_sheet_rounded = top_sheet.round(decimals=2)
-        await self.bot.say("""```Single Round Performances\ntop {}\
-     {} all time: \n \n {}```""".format(num, stat, top_sheet))
+        await self.bot.say("""```Single Round Performances\ntop {} {} all time: \n \n {}```""".format(
+                                                                                            num, stat, top_sheet))
 
-    #@commands.command()
-    #async def bott(self, num: int, statname: str):
-    #    stat = lb.stat_dict[statname.lower()]
-    #    rounded_sheet = wdl.all_rounds.round(decimals=2)
-    #    top_sheet = rounded_sheet.sort_values(stat).head(num)[[stat]]
-    #    await self.bot.say("""```Single Round Performances\nbot {}\
-    #         {} all time: \n \n {}```""".format(num, stat, top_sheet))
+    @commands.command(name="bot")
+    async def _bottom(self, num: int, statname: str):
+        stat = lb.stat_dict[statname.lower()]
+        rounded_sheet = wdl.all_rounds.round(decimals=2)
+        rounded_sheet_dropna = rounded_sheet.dropna(axis=0, how="any")
+        top_sheet = rounded_sheet_dropna.sort_values(stat).head(num)[[stat]]
+        await self.bot.say("""```Single Round Performances\nbottom {} {} all time: \n \n {}```""".format(
+                                                                                            num, stat, top_sheet))
 
     @commands.command()
     async def map(self, num: float):
