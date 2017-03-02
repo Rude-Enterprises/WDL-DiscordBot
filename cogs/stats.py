@@ -77,8 +77,8 @@ class Stats():
 
     @commands.command()
     async def avg(self, statname: str):
-        stat = lb.stat_dict[statname.lower()]
         try:
+            stat = lb.stat_dict[statname.lower()]
             stat_mean = wdl.all_rounds[stat].mean()
             stat_mean_round = round(stat_mean, 2)
             await self.bot.say("All time average {} per round: {}".format(stat, stat_mean_round))
