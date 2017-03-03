@@ -57,23 +57,29 @@ class Stats():
 
     @commands.command()
     async def top(self, num: int, statname: str):
-        stat = lb.stat_dict[statname.lower()]
-        rounded_sheet = wdl.all_rounds.round(decimals=2)
-        # top_sheet = all_rounds.nlargest(num, stat)
-        # stat = lb.stat_dict[statname.lower()]
-        top_sheet = rounded_sheet.sort_values(stat, ascending=False).head(num)[[stat]]
-        # top_sheet_rounded = top_sheet.round(decimals=2)
-        await self.bot.say("""```Single Round Performances\ntop {} {} all time: \n \n {}```""".format(
+        try:
+            stat = lb.stat_dict[statname.lower()]
+            rounded_sheet = wdl.all_rounds.round(decimals=2)
+            # top_sheet = all_rounds.nlargest(num, stat)
+            # stat = lb.stat_dict[statname.lower()]
+            top_sheet = rounded_sheet.sort_values(stat, ascending=False).head(num)[[stat]]
+            # top_sheet_rounded = top_sheet.round(decimals=2)
+            await self.bot.say("""```Single Round Performances\ntop {} {} all time: \n \n {}```""".format(
                                                                                             num, stat, top_sheet))
+        except KeyError:
+            pass
 
     @commands.command(name="bot")
     async def _bottom(self, num: int, statname: str):
-        stat = lb.stat_dict[statname.lower()]
-        rounded_sheet = wdl.all_rounds.round(decimals=2)
-        rounded_sheet_dropna = rounded_sheet.dropna(axis=0, how="any")
-        bot_sheet = rounded_sheet_dropna.sort_values(stat).head(num)[[stat]]
-        await self.bot.say("""```Single Round Performances\nbottom {} {} all time: \n \n {}```""".format(
+        try:
+            stat = lb.stat_dict[statname.lower()]
+            rounded_sheet = wdl.all_rounds.round(decimals=2)
+            rounded_sheet_dropna = rounded_sheet.dropna(axis=0, how="any")
+            bot_sheet = rounded_sheet_dropna.sort_values(stat).head(num)[[stat]]
+            await self.bot.say("""```Single Round Performances\nbottom {} {} all time: \n \n {}```""".format(
                                                                                             num, stat, bot_sheet))
+        except KeyError:
+            pass
 
     @commands.command()
     async def avg(self, statname: str):
@@ -92,17 +98,16 @@ class Stats():
             num_int = int(num)
             await self.bot.say("```Map {} has not been played in the WDL :(```".format(num_int))
 
-        map_name = wdl.map_data.loc[num, "Map Name"]
-        map_wad = wdl.map_data.loc[num, "Source Wad"]
-        map_rat = wdl.map_data.loc[num, "RAT"]
-        map_rat_round = round(map_rat, 2)
-        map_frags = wdl.map_data.loc[num, "FRG"]
-        map_frags_round = round(map_frags, 2)
-        map_games = wdl.map_data.loc[num, "GP"]
-        map_points_pergame = wdl.map_data.loc[num, "POINTS"]
-        map_points_round = round(map_points_pergame, 2)
-
-        if num in wdl.map_data.index:
+        elif num in wdl.map_data.index:
+            map_name = wdl.map_data.loc[num, "Map Name"]
+            map_wad = wdl.map_data.loc[num, "Source Wad"]
+            map_rat = wdl.map_data.loc[num, "RAT"]
+            map_rat_round = round(map_rat, 2)
+            map_frags = wdl.map_data.loc[num, "FRG"]
+            map_frags_round = round(map_frags, 2)
+            map_games = wdl.map_data.loc[num, "GP"]
+            map_points_pergame = wdl.map_data.loc[num, "POINTS"]
+            map_points_round = round(map_points_pergame, 2)
             await self.bot.say("""**{}** from {} \n\n{} games taken place \nAverage RAT - {}\
     \nAvg Frags per player - {} \nAvg Points per game - {}""".format(map_name,
                                                                      map_wad, map_games, map_rat_round, map_frags_round,
