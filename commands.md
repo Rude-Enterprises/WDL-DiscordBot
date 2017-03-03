@@ -16,7 +16,7 @@
 
 !standings - returns current WDL season standings
 
-!today - returns Gametime/Matchup if their is a game today
+!today - returns Matchup/Gametime if there is a game today
 
 !more - more stats on the WDL
 
