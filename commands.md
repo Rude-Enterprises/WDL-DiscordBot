@@ -8,6 +8,10 @@
 
 !top \<number> \<stat> - returns the top \<number> performances of a \<stat> (Single round Performance, not lifetime)
 
+!bot \<number> \<stat> - same as !top except, bottom
+
+!avg \<stat> - returns the WDL all time average of a \<stat> 
+
 !map \<number> - returns map info and stats of the map \<number> in wdl2017.wad
 
 !standings - returns current WDL season standings
