@@ -1,10 +1,11 @@
+import discord
 from discord.ext import commands
 import libraries as lb
 import pandas as pd
 import numpy as np
 import bs4 as bs
 import urllib.request
-import datetime
+from datetime import datetime
 import asyncio
 import re
 import sys
@@ -19,7 +20,7 @@ bot.remove_command("help")
 sauce = urllib.request.urlopen("http://doomleague.org/").read()
 soup = bs.BeautifulSoup(sauce, "lxml")
 div = soup.div
-tday = datetime.datetime.today()
+tday = datetime.today()
 
 print(tday)
 
@@ -61,6 +62,61 @@ print(all_rounds.axes)
 
 player_set = set()
 
+async def gametime_checker():
+    await bot.wait_until_ready()
+    counter = 0
+    channel = discord.Object(id="263863894848700417")
+    while not bot.is_closed:
+        counter += 1
+        gametime_str = r"Gametime:\s[\w]+,\s[\w]{3}\s[0-9]+\s@\s[0-9]+:[0-9][0-9]PM\sEST"
+        team_str = r"([\w]+)+\s\[...\]"
+        sauce = urllib.request.urlopen("http://doomleague.org/").read()
+        soup = bs.BeautifulSoup(sauce, "lxml")
+        game_times = soup.find_all(text=re.compile(gametime_str))
+        matchups = soup.find_all(text=re.compile(team_str))
+        date_objects = []
+        tday = datetime.today()
+
+        for any in game_times:
+            date_objects.append(datetime.strptime(any, "Gametime: %A, %b %d @ %I:%M%p EST"))
+        for any in date_objects:
+            if any.day == tday.day and any.month == tday.month:
+                if any == date_objects[0]:
+                    await bot.send_message(channel, "{} vs {} today, {}/{}- at {}:{} EST!".format(matchups[0], matchups[1], any.month, any.day, any.hour, any.minute))
+                elif any == date_objects[1]:
+                    await bot.send_message(channel, "{} vs {} today, {}/{}- at {}:{} EST!".format(matchups[2], matchups[3], any.month, any.day, any.hour, any.minute))
+                elif any == date_objects[2]:
+                    await bot.send_message(channel,
+                                           "{} vs {} today, {}/{}- at {}:{} EST!".format(matchups[4], matchups[5],
+                                                                                         any.month, any.day, any.hour,
+                                                                                         any.minute))
+                elif any == date_objects[3]:
+                    await bot.send_message(channel,
+                                           "{} vs {} today, {}/{}- at {}:{} EST!".format(matchups[6], matchups[7],
+                                                                                         any.month, any.day, any.hour,
+                                                                                         any.minute))
+                elif any == date_objects[4]:
+                    await bot.send_message(channel,
+                                           "{} vs {} today, {}/{}- at {}:{} EST!".format(matchups[8], matchups[9],
+                                                                                         any.month, any.day, any.hour,
+                                                                                         any.minute))
+                elif any == date_objects[5]:
+                    await bot.send_message(channel,
+                                           "{} vs {} today, {}/{}- at {}:{} EST!".format(matchups[10], matchups[11],
+                                                                                         any.month, any.day, any.hour,
+                                                                                         any.minute))
+                elif any == date_objects[6]:
+                    await bot.send_message(channel,
+                                           "{} vs {} today, {}/{}- at {}:{} EST!".format(matchups[12], matchups[13],
+                                                                                         any.month, any.day, any.hour,
+                                                                                         any.minute))
+                elif any == date_objects[7]:
+                    await bot.send_message(channel,
+                                           "{} vs {} today, {}/{}- at {}:{} EST!".format(matchups[14], matchups[15],
+                                                                                         any.month, any.day, any.hour,
+                                                                                         any.minute))
+
+        await asyncio.sleep(43200) # task runs every 12 hours
 
 @bot.event
 async def on_ready():
@@ -155,7 +211,6 @@ async def on_message(message):
     await bot.process_commands(message)
 
 
-
 if __name__ == '__main__':
 
     sys.path.insert(1, os.getcwd() + "/cogs/")  # this allows the cogs in the cogs folder to be loaded
@@ -163,4 +218,5 @@ if __name__ == '__main__':
     for extension in initial_extensions:
         bot.load_extension(extension)  # This adds the cogs listed in initial_extensions to the bot
 
-    bot.run("USER", "PASS")
+    bot.loop.create_task(gametime_checker())
+    bot.run("TOKEN")
