@@ -1,17 +1,17 @@
 ##Commands  
 ###STATS:  
 !\<player> \<stat> - returns a Lifetime \<stat> for the given \<player>. See below for \<stat>  
-!\<team> \<number> \<stat> - returns a team stat for the given season (<\number>)  
+!\<team> \<number> \<stat> - returns a team stat for the given season \<number>  
 !randstat - returns a random stat  
 !top \<number> \<stat> - returns the top \<number> performances of a \<stat> (Single round Performance, not lifetime)  
-!bot \<number> \<stat> - same as !top except, bottom  
+!bot \<number> \<stat> - same as !top, except bottom  
 !avg \<stat> - returns the WDL all time average of a \<stat>   
 !map \<number> - returns map info and stats of the map \<number> in wdl2017.wad  
 !standings - returns current WDL season standings  
 !today - returns Matchup/Gametime if there is a game today  
 !more - more stats on the WDL  
 
-###Pickups
+###PICKUPS:
 !add - adds you to the queue for Priv CTF (auto-removed after 1 hour)  
 !remove - removes you from the queue for Priv CTF  
 !who - returns who is currently !added for Priv CTF  
