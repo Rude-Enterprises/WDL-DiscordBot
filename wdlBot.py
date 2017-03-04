@@ -18,24 +18,6 @@ initial_extensions = ["misc", "stats", "webcmds"]
 bot = commands.Bot(command_prefix="!", description="Hello I am a bot ! beepboop.")
 bot.remove_command("help")
 
-sauce = urllib.request.urlopen("http://doomleague.org/").read()
-soup = bs.BeautifulSoup(sauce, "lxml")
-div = soup.div
-tday = datetime.today()
-
-print(tday)
-
-#REGEX FOR GAMETIMES ON WDL.ORG
-rege_str = r"Gametime:\s[\w]+,\s[\w]{3}\s[0-9]+\s@\s[0-9]+:[0-9][0-9]PM\sEST"
-rege_test = r"Gametime:"
-
-#FINDS ALL GAMETIME STRINGS FROM WDL.ORG
-game_times = soup.find_all(text=re.compile(rege_str))
-for all in game_times:
-    pass
-
-print(game_times[:3])
-
 #I FORGET WHY THIS IS HERE LOL
 pd.set_option('display.multi_sparse', True)
 
@@ -58,9 +40,7 @@ map_data = pd.read_excel(workbook, "Map Data", index_col=[11])
 map_rat_player = pd.read_excel(workbook, "Map RAT by Player", index_col=[1])
 map_rat_team = pd.read_excel(workbook, "Map RAT by Team", index_col=[0])
 
-print(all_rounds.axes)
-
-
+#Set for !add/!remove/!who
 player_set = set()
 
 async def gametime_checker():
