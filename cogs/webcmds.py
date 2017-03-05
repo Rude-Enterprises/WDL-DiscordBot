@@ -23,7 +23,7 @@ class Web():
         game_times = soup.find_all(text=re.compile(rege_str))
         for any in game_times:
             date_objects = []
-            date_objects.append(datetime.datetime.strptime(any, "Gametime: %A, %b %d @ %I:%M%p %Z"))
+            date_objects.append(datetime.strptime(any, "Gametime: %A, %b %d @ %I:%M%p %Z"))
 
         await self.bot.say(game_times[:4])
 
@@ -43,6 +43,7 @@ class Web():
                 await self.bot.say("game on the {}".format(tday.day))
             else:
                 pass
+
     @commands.command()
     async def today(self):
         gametime_str = r"Gametime:\s[\w]+,\s[\w]{3}\s[0-9]+\s@\s[0-9]+:[0-9][0-9]PM\sEST"
