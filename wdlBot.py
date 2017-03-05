@@ -3,7 +3,6 @@ from discord.ext import commands
 import libraries as lb
 import cfg
 import pandas as pd
-import numpy as np
 import bs4 as bs
 import urllib.request
 from datetime import datetime
@@ -11,9 +10,8 @@ import asyncio
 import re
 import sys
 import os
-from pytime import pytime
 
-initial_extensions = ["misc", "stats", "webcmds"]
+initial_extensions = ["misc", "stats", "webcmds", "pickups"]
 
 bot = commands.Bot(command_prefix="!", description="Hello I am a bot ! beepboop.")
 bot.remove_command("help")
@@ -42,6 +40,7 @@ map_rat_team = pd.read_excel(workbook, "Map RAT by Team", index_col=[0])
 
 #Set for !add/!remove/!who
 player_set = set()
+players_for_priv = 6
 
 async def gametime_checker():
     await bot.wait_until_ready()
@@ -89,6 +88,7 @@ async def gametime_checker():
 
         await asyncio.sleep(43200) # task runs every 12 hours
 
+
 @bot.event
 async def on_ready():
     print('Logged in as')
@@ -96,14 +96,9 @@ async def on_ready():
     print(bot.user.id)
     print('------')
 
-@bot.event
-async def game_time():
-    pass
 
 @bot.event
 async def on_message(message):
-    players_for_priv = 6
-    seasons = [1, 2, 3, 4, 5, 6, 7]
     message_split = message.content.split()
     message_lower = message.content.lower()
     message_upper = message.content.upper()
@@ -113,45 +108,8 @@ async def on_message(message):
     first_message_slice = first_message_string[1:]
     first_message_slice_upper = first_message_slice.upper()
 
-#should probably change these to commands at some point
-    if message_split[0] == "!add":
-        player_set.add(message.author)
-        player_len = len(player_set)
-        await bot.send_message(message.channel, "({}/{}) added, {} more needed for Priv CTF.".format(
-            player_len, players_for_priv, (players_for_priv - player_len)))
-
-        if player_len == 6:
-            await bot.send_message(message.channel, """{} your game is ready!\
-            Join the WDL priv server, password = season4""".format(
-            ", ".join([x.mention for x in player_set])))
-            while player_set:
-                player_set.pop()
-
-        await asyncio.sleep(3600)
-        try:
-            player_set.remove(message.author)
-            await bot.send_message(message.channel, "{} has been auto-removed from privlist".format(message.author))
-        except KeyError:
-            pass
-
-
-
-    if message_lower == "!remove":
-        player_set.remove(message.author)
-        player_len = len(player_set)
-        await bot.send_message(message.channel, """You have been removed from the list.\
- {}/{} added. {} needed for a game.""".format(
-                        player_len, players_for_priv, (players_for_priv - player_len)))
-
-    if message_lower == "!who":
-        player_string = ", ".join(str(any) for any in player_set)
-        if not player_set:
-            await bot.send_message(message.channel, "None added!")
-        if player_set:
-            await bot.send_message(message.channel, "Players added: {}".format(player_string))
-
 #!<player> <stat>
-    if message.channel.id != "194519530905665537":
+    if message.channel.id != "281128620146032641":
         return
 
     elif message_lower_split[0] in lb.player_dict and message_lower_split[1] in lb.stat_dict:
