@@ -10,6 +10,7 @@ import asyncio
 import re
 import sys
 import os
+import aiohttp
 
 initial_extensions = ["misc", "stats", "webcmds", "pickups"]
 
@@ -38,10 +39,8 @@ map_data = pd.read_excel(workbook, "Map Data", index_col=[11])
 map_rat_player = pd.read_excel(workbook, "Map RAT by Player", index_col=[1])
 map_rat_team = pd.read_excel(workbook, "Map RAT by Team", index_col=[0])
 
-#Set for !add/!remove/!who
-player_set = set()
-players_for_priv = 6
 
+#background process to check if theres a game today. Runs every 12 hours
 async def gametime_checker():
     await bot.wait_until_ready()
     counter = 0
