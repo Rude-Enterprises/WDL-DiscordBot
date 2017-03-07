@@ -1,9 +1,8 @@
 from discord.ext import commands
-import pandas as pd
 import random
 import libraries as lb
 import wdlBot as wdl
-import re
+
 
 wdl.all_time_playoff.name = "All time Playoffs"
 wdl.season7.name = "Season 7"
@@ -25,7 +24,6 @@ sheet_set = (wdl.all_time_playoff,
              wdl.season1,
              wdl.team_stats
              )
-
 
 
 class Stats():
