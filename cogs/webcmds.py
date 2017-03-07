@@ -90,10 +90,10 @@ class Web():
                     await self.bot.say(
                                            "{} vs {} today, {}/{}- at {}:{} EST!".format(matchups[14], matchups[15],
                                                                         any.month, any.day, any.hour, any.minute))
-                else:
-                    pass
-            else:
-                pass
+                break
+            
+        else:
+            await self.bot.say("No games today!")
 
 def setup(bot):
     bot.add_cog(Web(bot))
