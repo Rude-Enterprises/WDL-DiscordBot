@@ -61,29 +61,33 @@ async def gametime_checker():
         for any in date_objects:
             if any.day == tday.day and any.month == tday.month and tday.hour < any.hour:
                 if any == date_objects[0]:
-                    await bot.send_message(channel, "{} vs {} today, {}/{} at {}:{} EST!".format(matchups[0], matchups[1],
+                    await bot.send_message(channel, "**{} vs {}** - today {}/{} at {}:{} EST!".format(matchups[0], matchups[1],
                                                                                 any.month, any.day, any.hour, any.minute))
                 elif any == date_objects[1]:
-                    await bot.send_message(channel, "{} vs {} today, {}/{} at {}:{} EST!".format(matchups[2], matchups[3],
+                    await bot.send_message(channel, "**{} vs {}** - today {}/{} at {}:{} EST!".format(matchups[2], matchups[3],
                                                                                 any.month, any.day, any.hour, any.minute))
                 elif any == date_objects[2]:
-                    await bot.send_message(channel, "{} vs {} today, {}/{} at {}:{} EST!".format(matchups[4], matchups[5],
+                    await bot.send_message(channel, "**{} vs {}** - today {}/{} at {}:{} EST!".format(matchups[4], matchups[5],
                                                                                 any.month, any.day, any.hour, any.minute))
                 elif any == date_objects[3]:
-                    await bot.send_message(channel, "{} vs {} today, {}/{} at {}:{} EST!".format(matchups[6], matchups[7],
+                    await bot.send_message(channel, "**{} vs {}** - today {}/{} at {}:{} EST!".format(matchups[6], matchups[7],
                                                                                 any.month, any.day, any.hour, any.minute))
                 elif any == date_objects[4]:
-                    await bot.send_message(channel, "{} vs {} today, {}/{} at {}:{} EST!".format(matchups[8], matchups[9],
+                    await bot.send_message(channel, "**{} vs {}** - today {}/{} at {}:{} EST!".format(matchups[8], matchups[9],
                                                                                 any.month, any.day, any.hour, any.minute))
                 elif any == date_objects[5]:
-                    await bot.send_message(channel, "{} vs {} today, {}/{} at {}:{} EST!".format(matchups[10], matchups[11],
+                    await bot.send_message(channel, "**{} vs {}** - today {}/{} at {}:{} EST!".format(matchups[10], matchups[11],
                                                                                 any.month, any.day, any.hour, any.minute))
                 elif any == date_objects[6]:
-                    await bot.send_message(channel, "{} vs {} today, {}/{} at {}:{} EST!".format(matchups[12], matchups[13],
+                    await bot.send_message(channel, "**{} vs {}** - today {}/{} at {}:{} EST!".format(matchups[12], matchups[13],
                                                                                 any.month, any.day, any.hour, any.minute))
                 elif any == date_objects[7]:
-                    await bot.send_message(channel, "{} vs {} today, {}/{} at {}:{} EST!".format(matchups[14], matchups[15],
+                    await bot.send_message(channel, "**{} vs {}** - today {}/{} at {}:{} EST!".format(matchups[14], matchups[15],
                                                                                 any.month, any.day, any.hour, any.minute))
+                else:
+                    pass
+            else:
+                pass
 
         await asyncio.sleep(43200) # task runs every 12 hours
 
