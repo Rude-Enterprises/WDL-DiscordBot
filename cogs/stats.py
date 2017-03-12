@@ -45,9 +45,8 @@ class Stats():
             team_str_3char = team_str[:3]
             team_str_3char_exc = "!" + team_str_3char
             team_str_final = team_str_3char_exc.lower()
-            await self.bot.say("```Season {}\n{} had {} {}```".format(team_str_season,
-                                                                 lb.team_dict_two[team_str_final], random_team_stat,
-                                                                 stat_name))
+            await self.bot.say("```Season {}\n{} had {} {}```".format(team_str_season, lb.team_dict_two[team_str_final],
+                                                                                        random_team_stat, stat_name))
         else:
             random_stat = randsheet.loc[player_or_team_id, stat_name]
             await self.bot.say("```{}\n{} had {} {}```".format(randsheet.name,
@@ -107,9 +106,8 @@ class Stats():
             map_points_pergame = wdl.map_data.loc[num, "POINTS"]
             map_points_round = round(map_points_pergame, 2)
             await self.bot.say("""**{}** from {} \n\n{} games taken place \nAverage RAT - {}\
-    \nAvg Frags per player - {} \nAvg Points per game - {}""".format(map_name,
-                                                                     map_wad, map_games, map_rat_round, map_frags_round,
-                                                                     map_points_round))
+    \nAvg Frags per player - {} \nAvg Points per game - {}""".format(map_name, map_wad, map_games,
+                                                 map_rat_round, map_frags_round, map_points_round))
 
 def setup(bot):
     bot.add_cog(Stats(bot))
