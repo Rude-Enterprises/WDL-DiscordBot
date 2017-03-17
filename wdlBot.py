@@ -48,20 +48,35 @@ async def gametime_checker():
     while not bot.is_closed:
         counter += 1
         gametime_str = r"Gametime:\s[\w]+,\s[\w]{3}\s[0-9]+\s@\s[0-9]+:[0-9][0-9]PM\sEST"
+        playoff_gametime_re = r"Gametime:\s[\w]+,\s[\w]{3}\s[0-9]+\s@\s[0-9]+:[0-9][0-9]PM\sEDT"
+        playoff_team_re = r"#[0-9]\s[\w\s]+\s\[...\]\s\(MAP[0-9]+\)"
         team_str = r"([\w]+)+\s\[...\]"
         sauce = urllib.request.urlopen("http://doomleague.org/").read()
         soup = bs.BeautifulSoup(sauce, "lxml")
         game_times = soup.find_all(text=re.compile(gametime_str))
+        game_times_playoffs = soup.find_all(text=re.compile(playoff_gametime_re))
+        del game_times_playoffs[-1]
         matchups = soup.find_all(text=re.compile(team_str))
+        playoff_matchups = soup.find_all(text=re.compile(playoff_team_re))
         date_objects = []
+        date_objects_playoffs = []
         tday = datetime.today()
 
         for any in game_times:
-            date_objects.append(datetime.strptime(any, "Gametime: %A, %b %d @ %I:%M%p EST"))
+            if any != "Gametime: Sunday, Mar 12 @ 3:00PM EDT (DST IN EFFECT!)":
+                date_objects.append(datetime.strptime(any, "Gametime: %A, %b %d @ %I:%M%p EST"))
+        for any in game_times_playoffs:
+            date_objects_playoffs.append(datetime.strptime(any, "Gametime: %A, %b %d @ %I:%M%p EDT"))
         for any in date_objects:
             if any.day == tday.day and any.month == tday.month and tday.hour < any.hour:
                 await bot.send_message(channel, "**{} vs {}** - today {}/{} at {}:{} EST!".format(matchups[(date_objects.index(any) * 2)],
                                                 matchups[(date_objects.index(any) * 2) + 1], any.month, any.day, any.hour, any.minute))
+            else:
+                pass
+        for any in date_objects_playoffs:
+            if any.day == tday.day and any.month == tday.month and tday.hour < any.hour:
+                await bot.send_message(channel, "**{} @ {}** - today {}/{} at {}:{} EST!".format(playoff_matchups[(date_objects_playoffs.index(any) * 2)],
+                                    playoff_matchups[(date_objects_playoffs.index(any) * 2) + 1], any.month, any.day, any.hour, any.minute))
             else:
                 pass
 
@@ -88,7 +103,7 @@ async def on_message(message):
     first_message_slice_upper = first_message_slice.upper()
 
 #!<player> <stat>
-    if message.channel.id != "263863894848700417":
+    if message.channel.id != "281128620146032641":
         return
 
     elif message_lower_split[0] in lb.player_dict and message_lower_split[1] in lb.stat_dict:
