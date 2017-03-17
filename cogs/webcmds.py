@@ -63,9 +63,9 @@ class Web():
 
         for any in game_times:
             date_objects.append(datetime.strptime(any, "Gametime: %A, %b %d @ %I:%M%p EST"))
+
         for any in game_times_playoffs:
-            if any != "Gametime: Sunday, Mar 12 @ 3:00PM EDT (DST IN EFFECT!)":
-                date_objects_playoffs.append(datetime.strptime(any, "Gametime: %A, %b %d @ %I:%M%p EDT"))
+            date_objects_playoffs.append(datetime.strptime(any, "Gametime: %A, %b %d @ %I:%M%p EDT"))
 
         for any in date_objects:
             if any.day == tday.day and any.month == tday.month:
