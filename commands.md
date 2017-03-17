@@ -8,7 +8,7 @@
 !avg \<stat> - returns the WDL all time average of a \<stat>   
 !map \<number> - returns map info and stats of the map \<number> in wdl2017.wad  
 !standings - returns current WDL season standings  
-!today - returns Matchup/Gametime if there is a game today  
+!today - returns Matchup/Gametime if there are games today  
 !more - more stats on the WDL  
 
 ###PICKUPS:
