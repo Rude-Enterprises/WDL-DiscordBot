@@ -63,16 +63,18 @@ async def gametime_checker():
         tday = datetime.today()
 
         for any in game_times:
-            if any != "Gametime: Sunday, Mar 12 @ 3:00PM EDT (DST IN EFFECT!)":
-                date_objects.append(datetime.strptime(any, "Gametime: %A, %b %d @ %I:%M%p EST"))
+            date_objects.append(datetime.strptime(any, "Gametime: %A, %b %d @ %I:%M%p EST"))
+
         for any in game_times_playoffs:
             date_objects_playoffs.append(datetime.strptime(any, "Gametime: %A, %b %d @ %I:%M%p EDT"))
+
         for any in date_objects:
             if any.day == tday.day and any.month == tday.month and tday.hour < any.hour:
                 await bot.send_message(channel, "**{} vs {}** - today {}/{} at {}:{} EST!".format(matchups[(date_objects.index(any) * 2)],
                                                 matchups[(date_objects.index(any) * 2) + 1], any.month, any.day, any.hour, any.minute))
             else:
                 pass
+
         for any in date_objects_playoffs:
             if any.day == tday.day and any.month == tday.month and tday.hour < any.hour:
                 await bot.send_message(channel, "**{} @ {}** - today {}/{} at {}:{} EST!".format(playoff_matchups[(date_objects_playoffs.index(any) * 2)],
