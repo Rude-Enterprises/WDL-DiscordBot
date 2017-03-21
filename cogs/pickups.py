@@ -1,6 +1,5 @@
 from discord.ext import commands
 import asyncio
-import wdlBot as wdl
 
 player_set = set()
 players_for_priv = 6
