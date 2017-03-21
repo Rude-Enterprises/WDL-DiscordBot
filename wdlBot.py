@@ -47,42 +47,56 @@ async def gametime_checker():
     channel = discord.Object(id="157946982567116800")
     while not bot.is_closed:
         counter += 1
+
+        #regexs for gametime_checker
         gametime_str = r"Gametime:\s[\w]+,\s[\w]{3}\s[0-9]+\s@\s[0-9]+:[0-9][0-9]PM\sEST"
         playoff_gametime_re = r"Gametime:\s[\w]+,\s[\w]{3}\s[0-9]+\s@\s[0-9]+:[0-9][0-9]PM\sEDT"
         playoff_team_re = r"#[0-9]\s[\w\s]+\s\[...\]\s\(MAP[0-9]+\)"
         team_str = r"([\w]+)+\s\[...\]"
+
+        #BeautifulSoup stuff used for gametime_checker, need to convert to aiohttp at some point
         sauce = urllib.request.urlopen("http://doomleague.org/").read()
         soup = bs.BeautifulSoup(sauce, "lxml")
         game_times = soup.find_all(text=re.compile(gametime_str))
         game_times_playoffs = soup.find_all(text=re.compile(playoff_gametime_re))
         del game_times_playoffs[-1]
+
+        #lists of all found gametime regexs, regular season, and playoffs
         matchups = soup.find_all(text=re.compile(team_str))
         playoff_matchups = soup.find_all(text=re.compile(playoff_team_re))
+
+        #gametime regex's converted to datetime objects and put in these lists
         date_objects = []
         date_objects_playoffs = []
         tday = datetime.today()
 
+        #gametime regex's converted to datetime objects
         for any in game_times:
             date_objects.append(datetime.strptime(any, "Gametime: %A, %b %d @ %I:%M%p EST"))
 
         for any in game_times_playoffs:
             date_objects_playoffs.append(datetime.strptime(any, "Gametime: %A, %b %d @ %I:%M%p EDT"))
 
+        #checking if there is a game today
         for any in date_objects:
             if any.day == tday.day and any.month == tday.month and tday.hour < any.hour:
-                await bot.send_message(channel, "**{} vs {}** - today {}/{} at {}:{} EST!".format(matchups[(date_objects.index(any) * 2)],
-                                                matchups[(date_objects.index(any) * 2) + 1], any.month, any.day, any.hour, any.minute))
+                await bot.send_message(channel, "**{} vs {}** - today {}/{} at {}:{} EST!".format(
+                    matchups[(date_objects.index(any) * 2)],
+                    matchups[(date_objects.index(any) * 2) + 1], any.month, any.day, any.hour, any.minute))
             else:
                 pass
 
+        #checking if there is a playoff game today
         for any in date_objects_playoffs:
             if any.day == tday.day and any.month == tday.month and tday.hour < any.hour:
-                await bot.send_message(channel, "**{} @ {}** - today {}/{} at {}:{} EST!".format(playoff_matchups[(date_objects_playoffs.index(any) * 2)],
-                                    playoff_matchups[(date_objects_playoffs.index(any) * 2) + 1], any.month, any.day, any.hour, any.minute))
+                await bot.send_message(channel, "**{} @ {}** - today {}/{} at {}:{} EST!".format(
+                    playoff_matchups[(date_objects_playoffs.index(any) * 2)],
+                    playoff_matchups[(date_objects_playoffs.index(any) * 2) + 1], any.month, any.day, any.hour, any.minute))
             else:
                 pass
 
-        await asyncio.sleep(43200) # task runs every 12 hours
+        # task runs every 12 hours
+        await asyncio.sleep(43200)
 
 
 @bot.event
@@ -124,7 +138,7 @@ async def on_message(message):
             team_stat = team_stats.loc[lb.team_dict_inverse[team_dict_inv_key], lb.stat_dict[message_lower_split[2]]]
             team_stat_round = round(team_stat, 2)
             await bot.send_message(message.channel, "{} Season {} {}: {}".format(lb.team_dict_two[message_lower_split[0]],
-                                                        message_split[1], lb.stat_dict[message_lower_split[2]], team_stat_round))
+                                                message_split[1], lb.stat_dict[message_lower_split[2]], team_stat_round))
 
     elif message_lower_split[0] in lb.team_dict_two and len(message_lower_split) == 2:
         team_dict_inv_key = (first_message_slice + " " + str(message_lower_split[1]))
