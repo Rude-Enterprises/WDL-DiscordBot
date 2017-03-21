@@ -73,16 +73,14 @@ class Web():
                                 matchups[(date_objects.index(any) * 2) + 1], any.month, any.day, any.hour, any.minute))
 
             else:
-                await self.bot.say("No games today!")
-                break
+                pass
 
         for any in date_objects_playoffs:
             if any.day == tday.day and any.month == tday.month and tday.hour < any.hour:
                 await self.bot.say("**{} @ {}** - today {}/{} at {}:{} EST!".format(playoff_matchups[(date_objects_playoffs.index(any) * 2)],
                                     playoff_matchups[(date_objects_playoffs.index(any) * 2) + 1], any.month, any.day, any.hour, any.minute))
             else:
-                await self.bot.say("No games today!")
-                break
+                pass
 
 def setup(bot):
     bot.add_cog(Web(bot))
