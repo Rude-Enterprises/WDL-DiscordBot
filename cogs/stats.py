@@ -91,7 +91,7 @@ class Stats():
     async def map(self, num: float):
         if num not in wdl.map_data.index:
             num_int = int(num)
-            await self.bot.say("```{} has not been played in the WDL :(```".format(num_int))
+            await self.bot.say("```Map {} has not been played in the WDL :(```".format(num_int))
 
         elif num in wdl.map_data.index:
             map_name = wdl.map_data.loc[num, "Map Name"]
