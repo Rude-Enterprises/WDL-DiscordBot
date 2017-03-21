@@ -61,8 +61,7 @@ class Stats():
             # stat = lb.stat_dict[statname.lower()]
             top_sheet = rounded_sheet.sort_values(stat, ascending=False).head(num)[[stat]]
             # top_sheet_rounded = top_sheet.round(decimals=2)
-            await self.bot.say("""```Single Round Performances\ntop {} {} all time: \n \n {}```""".format(
-                                                                                            num, stat, top_sheet))
+            await self.bot.say("```{}```".format(top_sheet))
         except KeyError:
             pass
 
@@ -73,8 +72,7 @@ class Stats():
             rounded_sheet = wdl.all_rounds.round(decimals=2)
             rounded_sheet_dropna = rounded_sheet.dropna(axis=0, how="any")
             bot_sheet = rounded_sheet_dropna.sort_values(stat).head(num)[[stat]]
-            await self.bot.say("""```Single Round Performances\nbottom {} {} all time: \n \n {}```""".format(
-                                                                                            num, stat, bot_sheet))
+            await self.bot.say("```{}```".format(bot_sheet))
         except KeyError:
             pass
 
@@ -93,7 +91,7 @@ class Stats():
     async def map(self, num: float):
         if num not in wdl.map_data.index:
             num_int = int(num)
-            await self.bot.say("```Map {} has not been played in the WDL :(```".format(num_int))
+            await self.bot.say("```{} has not been played in the WDL :(```".format(num_int))
 
         elif num in wdl.map_data.index:
             map_name = wdl.map_data.loc[num, "Map Name"]
@@ -105,9 +103,9 @@ class Stats():
             map_games = wdl.map_data.loc[num, "GP"]
             map_points_pergame = wdl.map_data.loc[num, "POINTS"]
             map_points_round = round(map_points_pergame, 2)
-            await self.bot.say("""**{}** from {} \n\n{} games taken place \nAverage RAT - {}\
-    \nAvg Frags per player - {} \nAvg Points per game - {}""".format(map_name, map_wad, map_games,
-                                                 map_rat_round, map_frags_round, map_points_round))
+            await self.bot.say("""**{}** from {} \n\n{} games taken place \nAvg Frags per player - {}\
+                    \nAvg Points per game - {}\nAvg RAT - {}""".format(map_name, map_wad, map_games,
+                                                 map_frags_round, map_points_round, map_rat_round))
 
 def setup(bot):
     bot.add_cog(Stats(bot))
