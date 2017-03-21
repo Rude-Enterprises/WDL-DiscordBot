@@ -13,7 +13,7 @@ class Web():
     async def standings(self):
         wdl_standings = pd.read_html("http://doomleague.org", index_col=0)
         standings_table = wdl_standings[0][["PTS", "PF", "PA"]]
-        await self.bot.say("```WDL Season 7 Standings{}```".format(str(standings_table)))
+        await self.bot.say("```WDL Season 7 Standings\n\n{}```".format(str(standings_table)))
 
     @commands.command()
     async def gameday(self):
@@ -23,7 +23,7 @@ class Web():
         game_times = soup.find_all(text=re.compile(rege_str))
         for any in game_times:
             date_objects = []
-            date_objects.append(datetime.strptime(any, "Gametime: %A, %b %d @ %I:%M%p %Z"))
+            date_objects.append(datetime.strptime(any, "Gametime: %A, %b %d @ %I:%M%p EST"))
 
         await self.bot.say(game_times[:4])
 
@@ -36,25 +36,25 @@ class Web():
         date_objects = []
         tday = datetime.today()
 
-        for any in game_times:
-            date_objects.append(datetime.strptime(any, "Gametime: %A, %b %d @ %I:%M%p EST"))
-        for any in date_objects:
-            if any.day == tday.day and any.month == tday.month:
-                await self.bot.say("game on the {}".format(tday.day))
-            else:
-                pass
+        await self.bot.say("{}".format(game_times))
+
 
     @commands.command()
     async def today(self):
+        #gametime regexs from wdl.org
         gametime_str = r"Gametime:\s[\w]+,\s[\w]{3}\s[0-9]+\s@\s[0-9]+:[0-9][0-9]PM\sEST"
         playoff_gametime_re = r"Gametime:\s[\w]+,\s[\w]{3}\s[0-9]+\s@\s[0-9]+:[0-9][0-9]PM\sEDT"
         team_str = r"([\w]+)+\s\[...\]"
         playoff_team_re = r"#[0-9]\s[\w\s]+\s\[...\]\s\(MAP[0-9]+\)"
+
+        #bs4 stuff
         sauce = urllib.request.urlopen("http://doomleague.org/").read()
         soup = bs.BeautifulSoup(sauce, "lxml")
         game_times = soup.find_all(text=re.compile(gametime_str))
         game_times_playoffs = soup.find_all(text=re.compile(playoff_gametime_re))
         del game_times_playoffs[-1]
+
+        #lists of regexs
         matchups = soup.find_all(text=re.compile(team_str))
         playoff_matchups = soup.find_all(text=re.compile(playoff_team_re))
         date_objects = []
@@ -71,15 +71,18 @@ class Web():
             if any.day == tday.day and any.month == tday.month:
                 await self.bot.say("**{} vs {}** - today {}/{} at {}:{} EST!".format(matchups[(date_objects.index(any) * 2)],
                                 matchups[(date_objects.index(any) * 2) + 1], any.month, any.day, any.hour, any.minute))
+
             else:
-                pass
+                await self.bot.say("No games today!")
+                break
 
         for any in date_objects_playoffs:
             if any.day == tday.day and any.month == tday.month and tday.hour < any.hour:
                 await self.bot.say("**{} @ {}** - today {}/{} at {}:{} EST!".format(playoff_matchups[(date_objects_playoffs.index(any) * 2)],
                                     playoff_matchups[(date_objects_playoffs.index(any) * 2) + 1], any.month, any.day, any.hour, any.minute))
             else:
-                pass
+                await self.bot.say("No games today!")
+                break
 
 def setup(bot):
     bot.add_cog(Web(bot))
