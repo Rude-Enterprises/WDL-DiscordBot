@@ -1,5 +1,5 @@
-##Commands  
-###STATS:  
+## Commands  
+### STATS:  
 !\<player> \<stat> - returns a Lifetime \<stat> for the given \<player>. See below for \<stat>  
 !\<team> \<number> \<stat> - returns a team stat for the given season \<number>  
 !randstat - returns a random stat  
@@ -11,7 +11,7 @@
 !today - returns Matchup/Gametime if there are games today  
 !more - more stats on the WDL  
 
-###PICKUPS:
+### PICKUPS:
 !add - adds you to the queue for Priv CTF (auto-removed after 1 hour)  
 !remove - removes you from the queue for Priv CTF  
 !who - returns who is currently !added for Priv CTF  
