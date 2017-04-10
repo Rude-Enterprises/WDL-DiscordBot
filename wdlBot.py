@@ -119,7 +119,7 @@ async def on_message(message):
     first_message_slice_upper = first_message_slice.upper()
 
 #!<player> <stat>
-    if message.channel.id != "281128620146032641":
+    if message.channel.id != cfg.wdl_stats_channelid:
         return
 
     elif message_lower_split[0] in lb.player_dict and message_lower_split[1] in lb.stat_dict:
@@ -160,3 +160,4 @@ if __name__ == '__main__':
 
     bot.loop.create_task(gametime_checker())
     bot.run(cfg.TOKEN)
+
