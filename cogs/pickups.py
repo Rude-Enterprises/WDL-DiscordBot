@@ -11,19 +11,22 @@ class Pickups():
     @commands.command(pass_context=True, ignore_extra=False)
     async def add(self, ctx):
         player_set.add(ctx.message.author)
-        await self.bot.say("({}/{}) added, {} more needed for Priv CTF.".format(
-                len(player_set), players_for_priv, (players_for_priv - len(player_set))))
-
-        if len(player_set) == 6:
+        if len(player_set) == players_for_priv:
             await self.bot.say("""{} your game is ready! Join the WDL priv-CTF server: password = season4""".format(
-                                                             ", ".join([all.mention for all in player_set])))
+                ", ".join([all.mention for all in player_set])))
             while player_set:
                 player_set.pop()
 
+        else:
+            await self.bot.say("({}/{}) added, {} more needed for Priv CTF.".format(
+                len(player_set), players_for_priv, (players_for_priv - len(player_set))))
+
         await asyncio.sleep(3600)
+
         try:
             player_set.remove(ctx.message.author)
             await self.bot.say("{} has been auto-removed from privlist".format(ctx.message.author))
+
         except KeyError:
             pass
 
