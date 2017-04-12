@@ -59,7 +59,7 @@ class Stats():
             rounded_sheet = wdl.all_rounds.round(decimals=2)
             # top_sheet = all_rounds.nlargest(num, stat)
             # stat = lb.stat_dict[statname.lower()]
-            top_sheet = rounded_sheet.sort_values(stat, ascending=False).head(num)[[stat]]
+            top_sheet = rounded_sheet.sort_values(stat, ascending=False).head(num)[[stat, "SID"]]
             # top_sheet_rounded = top_sheet.round(decimals=2)
             await self.bot.say("```{}```".format(top_sheet))
         except KeyError:
