@@ -4,7 +4,6 @@ import libraries as lb
 import cfg
 import pandas as pd
 import bs4 as bs
-import urllib.request
 from datetime import datetime
 import asyncio
 import re
@@ -40,6 +39,8 @@ map_rat_player = pd.read_excel(workbook, "Map RAT by Player", index_col=[1])
 map_rat_team = pd.read_excel(workbook, "Map RAT by Team", index_col=[0])
 
 
+http = aiohttp.ClientSession()
+
 #background process to check if theres a game today. Runs every 12 hours
 async def gametime_checker():
     await bot.wait_until_ready()
@@ -55,7 +56,8 @@ async def gametime_checker():
         team_str = r"([\w]+)+\s\[...\]"
 
         #BeautifulSoup stuff used for gametime_checker, need to convert to aiohttp at some point
-        sauce = urllib.request.urlopen("http://doomleague.org/").read()
+        resp = await http.get("http://doomleague.org/")
+        sauce = await resp.text()
         soup = bs.BeautifulSoup(sauce, "lxml")
         game_times = soup.find_all(text=re.compile(gametime_str))
         game_times_playoffs = soup.find_all(text=re.compile(playoff_gametime_re))
@@ -98,6 +100,7 @@ async def gametime_checker():
         # task runs every 12 hours
         await asyncio.sleep(43200)
 
+    await http.close()
 
 @bot.event
 async def on_ready():
@@ -118,8 +121,8 @@ async def on_message(message):
     first_message_slice = first_message_string[1:]
     first_message_slice_upper = first_message_slice.upper()
 
-#!<player> <stat>
-    if message.channel.id != cfg.wdl_stats_channelid:
+    #!<player> <stat>
+    if message.channel.id != cfg.wdl_stats_channelid and message.channel.id != cfg.odamex_general_channelid and message.channel.id != cfg.bot_test_channelid:
         return
 
     elif message_lower_split[0] in lb.player_dict and message_lower_split[1] in lb.stat_dict:
@@ -128,7 +131,7 @@ async def on_message(message):
         await bot.send_message(message.channel, "```{} lifetime {}: {} ```".format(
             lb.player_dict[message_lower_split[0]], lb.stat_dict[message_lower_split[1]], player_stat_round))
 
-#!<team> <number> <stat>
+    #!<team> <number> <stat>
     elif message_lower_split[0] in lb.team_dict_two and len(message_lower_split) == 3:
         team_dict_inv_key = (first_message_slice + " " + str(message_lower_split[1]))
         if team_dict_inv_key not in lb.team_dict_inverse:
