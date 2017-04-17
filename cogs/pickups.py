@@ -39,10 +39,15 @@ class Pickups():
     @commands.command(pass_context=True)
     async def who(self, ctx):
         player_string = ", ".join(str(any) for any in player_set)
+
         if not player_set:
             await self.bot.say("None added!")
-        if player_set:
+
+        elif player_set:
             await self.bot.say("Players added: {}".format(player_string))
+
+        else:
+            pass
 
 def setup(bot):
     bot.add_cog(Pickups(bot))
