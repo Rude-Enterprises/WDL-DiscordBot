@@ -121,10 +121,11 @@ async def on_message(message):
     first_message_slice = first_message_string[1:]
     first_message_slice_upper = first_message_slice.upper()
 
-    #!<player> <stat>
+    #bot will only work in WDL, Odamex, and testing channels
     if message.channel.id != cfg.wdl_stats_channelid and message.channel.id != cfg.odamex_general_channelid and message.channel.id != cfg.bot_test_channelid:
         return
 
+    ##!<player> <stat>
     elif message_lower_split[0] in lb.player_dict and message_lower_split[1] in lb.stat_dict:
         player_stat = player_totals.ix[lb.player_dict[message_lower_split[0]], lb.stat_dict[message_lower_split[1]]]
         player_stat_round = round(player_stat, 2)
