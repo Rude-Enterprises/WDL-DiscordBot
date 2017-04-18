@@ -1,15 +1,15 @@
-import discord
+import re
+import sys
+import os
+import asyncio
+from datetime import datetime
 from discord.ext import commands
 import libraries as lb
 import cfg
 import pandas as pd
 import bs4 as bs
-from datetime import datetime
-import asyncio
-import re
-import sys
-import os
 import aiohttp
+import discord
 
 initial_extensions = ["misc", "stats", "webcmds", "pickups"]
 
@@ -69,31 +69,33 @@ async def gametime_checker():
 
         #gametime regex's converted to datetime objects and put in these lists
         date_objects = []
-        date_objects_playoffs = []
+        date_obj_playoffs = []
         tday = datetime.today()
 
         #gametime regex's converted to datetime objects
-        for any in game_times:
-            date_objects.append(datetime.strptime(any, "Gametime: %A, %b %d @ %I:%M%p EST"))
+        for regexs in game_times:
+            date_objects.append(datetime.strptime(regexs, "Gametime: %A, %b %d @ %I:%M%p EST"))
 
-        for any in game_times_playoffs:
-            date_objects_playoffs.append(datetime.strptime(any, "Gametime: %A, %b %d @ %I:%M%p EDT"))
+        for regexs in game_times_playoffs:
+            date_obj_playoffs.append(datetime.strptime(regexs, "Gametime: %A, %b %d @ %I:%M%p EDT"))
 
         #checking if there is a game today
-        for any in date_objects:
-            if any.day == tday.day and any.month == tday.month and tday.hour < any.hour:
+        for obj in date_objects:
+            if obj.day == tday.day and obj.month == tday.month and tday.hour < obj.hour:
                 await bot.send_message(channel, "**{} vs {}** - today {}/{} at {}:{} EST!".format(
-                    matchups[(date_objects.index(any) * 2)],
-                    matchups[(date_objects.index(any) * 2) + 1], any.month, any.day, any.hour, any.minute))
+                    matchups[(date_objects.index(obj) * 2)],
+                    matchups[(date_objects.index(obj) * 2) + 1],
+                    obj.month, obj.day, obj.hour, obj.minute))
             else:
                 pass
 
         #checking if there is a playoff game today
-        for any in date_objects_playoffs:
-            if any.day == tday.day and any.month == tday.month and tday.hour < any.hour:
+        for obj in date_obj_playoffs:
+            if obj.day == tday.day and obj.month == tday.month and tday.hour < obj.hour:
                 await bot.send_message(channel, "**{} @ {}** - today {}/{} at {}:{} EST!".format(
-                    playoff_matchups[(date_objects_playoffs.index(any) * 2)],
-                    playoff_matchups[(date_objects_playoffs.index(any) * 2) + 1], any.month, any.day, any.hour, any.minute))
+                    playoff_matchups[(date_obj_playoffs.index(obj) * 2)],
+                    playoff_matchups[(date_obj_playoffs.index(obj) * 2) + 1],
+                    obj.month, obj.day, obj.hour, obj.minute))
             else:
                 pass
 
@@ -112,6 +114,9 @@ async def on_ready():
 
 @bot.event
 async def on_message(message):
+    """Here are commands relating to !players and !teams. on_message lets us analyze the Discord
+    message content to infer the command rather than writing 100+ @command.commands."""
+
     message_split = message.content.split()
     message_lower = message.content.lower()
     message_upper = message.content.upper()
@@ -122,33 +127,40 @@ async def on_message(message):
     first_message_slice_upper = first_message_slice.upper()
 
     #bot will only work in WDL, Odamex, and testing channels
-    if message.channel.id != cfg.wdl_stats_channelid and message.channel.id != cfg.odamex_general_channelid and message.channel.id != cfg.bot_test_channelid:
+    if (message.channel.id != cfg.wdl_stats_channelid and
+            message.channel.id != cfg.odamex_general_channelid and
+            message.channel.id != cfg.bot_test_channelid):
         return
 
     ##!<player> <stat>
     elif message_lower_split[0] in lb.player_dict and message_lower_split[1] in lb.stat_dict:
-        player_stat = player_totals.ix[lb.player_dict[message_lower_split[0]], lb.stat_dict[message_lower_split[1]]]
+        player_stat = player_totals.ix[lb.player_dict[message_lower_split[0]],
+                                       lb.stat_dict[message_lower_split[1]]]
         player_stat_round = round(player_stat, 2)
         await bot.send_message(message.channel, "```{} lifetime {}: {} ```".format(
-            lb.player_dict[message_lower_split[0]], lb.stat_dict[message_lower_split[1]], player_stat_round))
+            lb.player_dict[message_lower_split[0]], lb.stat_dict[message_lower_split[1]],
+            player_stat_round))
 
     #!<team> <number> <stat>
     elif message_lower_split[0] in lb.team_dict_two and len(message_lower_split) == 3:
         team_dict_inv_key = (first_message_slice + " " + str(message_lower_split[1]))
         if team_dict_inv_key not in lb.team_dict_inverse:
             await bot.send_message(message.channel, "No team {} found for Season {}".format(first_message_slice_upper,
-                                                                                         message_split[1]))
+                                                                                            message_split[1]))
         else:
-            team_stat = team_stats.loc[lb.team_dict_inverse[team_dict_inv_key], lb.stat_dict[message_lower_split[2]]]
+            team_stat = team_stats.loc[lb.team_dict_inverse[team_dict_inv_key],
+                                       lb.stat_dict[message_lower_split[2]]]
             team_stat_round = round(team_stat, 2)
             await bot.send_message(message.channel, "{} Season {} {}: {}".format(lb.team_dict_two[message_lower_split[0]],
-                                                message_split[1], lb.stat_dict[message_lower_split[2]], team_stat_round))
+                                                                                 message_split[1],
+                                                                                 lb.stat_dict[message_lower_split[2]],
+                                                                                 team_stat_round))
 
     elif message_lower_split[0] in lb.team_dict_two and len(message_lower_split) == 2:
         team_dict_inv_key = (first_message_slice + " " + str(message_lower_split[1]))
         if team_dict_inv_key not in lb.team_dict_inverse:
             await bot.send_message(message.channel, "No team {} found for Season {}".format(first_message_slice_upper,
-                                                                                         message_split[1]))
+                                                                                            message_split[1]))
         else:
             pass
 
@@ -164,4 +176,3 @@ if __name__ == '__main__':
 
     bot.loop.create_task(gametime_checker())
     bot.run(cfg.TOKEN)
-
