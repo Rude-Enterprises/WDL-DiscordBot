@@ -1,7 +1,7 @@
 import random
 from discord.ext import commands
 import libraries as lb
-import wdlBot as wdl
+import wdlbot as wdl
 
 
 wdl.all_time_playoff.name = "All time Playoffs"
