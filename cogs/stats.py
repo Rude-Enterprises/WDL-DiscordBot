@@ -1,5 +1,5 @@
-from discord.ext import commands
 import random
+from discord.ext import commands
 import libraries as lb
 import wdlBot as wdl
 
@@ -14,25 +14,27 @@ wdl.season2.name = "Season 2"
 wdl.season1.name = "Season 1"
 wdl.team_stats.name = "Team Stats"
 
-sheet_set = (wdl.all_time_playoff,
-             wdl.season7,
-             wdl.season6,
-             wdl.season5,
-             wdl.season4,
-             wdl.season3,
-             wdl.season2,
-             wdl.season1,
-             wdl.team_stats
-             )
+pandas_sheets = (wdl.all_time_playoff,
+                 wdl.season7,
+                 wdl.season6,
+                 wdl.season5,
+                 wdl.season4,
+                 wdl.season3,
+                 wdl.season2,
+                 wdl.season1,
+                 wdl.team_stats
+                )
 
 
 class Stats():
+    """Stats holds all statistical analysis commands that can be used in Discord Chat."""
     def __init__(self, bot):
         self.bot = bot
 
     @commands.command()
     async def randstat(self):
-        randsheet = sheet_set[random.randint(0, 8)]
+        """!randstat - returns a random stat."""
+        randsheet = pandas_sheets[random.randint(0, 8)]
         index_length = len(randsheet.index)
         col_length = len(randsheet.columns)
         player_or_team_id = randsheet.index[random.randint(1, (index_length - 1))]
@@ -45,15 +47,19 @@ class Stats():
             team_str_3char = team_str[:3]
             team_str_3char_exc = "!" + team_str_3char
             team_str_final = team_str_3char_exc.lower()
-            await self.bot.say("```Season {}\n{} had {} {}```".format(team_str_season, lb.team_dict_two[team_str_final],
-                                                                                        random_team_stat, stat_name))
+            await self.bot.say("```Season {}\n{} had {} {}```".format(team_str_season,
+                                                                      lb.team_dict_two[team_str_final],
+                                                                      random_team_stat, stat_name))
         else:
             random_stat = randsheet.loc[player_or_team_id, stat_name]
             await self.bot.say("```{}\n{} had {} {}```".format(randsheet.name,
-                                                          player_or_team_id, random_stat, stat_name))
+                                                               player_or_team_id,
+                                                               random_stat,
+                                                               stat_name))
 
     @commands.command()
     async def top(self, num: int, statname: str):
+        """!top num statname - returns the top x performances of the selected stat."""
         try:
             stat = lb.stat_dict[statname.lower()]
             rounded_sheet = wdl.all_rounds.round(decimals=2)
@@ -67,6 +73,7 @@ class Stats():
 
     @commands.command(name="bot")
     async def _bottom(self, num: int, statname: str):
+        """!bot num statname - returns the bottom x performances of the selected stat."""
         try:
             stat = lb.stat_dict[statname.lower()]
             rounded_sheet = wdl.all_rounds.round(decimals=2)
@@ -78,6 +85,7 @@ class Stats():
 
     @commands.command()
     async def avg(self, statname: str):
+        """!avg statname - returns the all-time average of the selected stat."""
         try:
             stat = lb.stat_dict[statname.lower()]
             stat_mean = wdl.all_rounds[stat].mean()
@@ -89,6 +97,7 @@ class Stats():
 
     @commands.command()
     async def map(self, num: float):
+        """!map num - returns info and statistics for the selected map."""
         if num not in wdl.map_data.index:
             num_int = int(num)
             await self.bot.say("```Map {} has not been played in the WDL :(```".format(num_int))
@@ -104,10 +113,12 @@ class Stats():
             map_points_pergame = wdl.map_data.loc[num, "POINTS"]
             map_points_round = round(map_points_pergame, 2)
             await self.bot.say("""**{}** from {} \n\n{} games taken place \nAvg Frags per player - {}\
-                    \nAvg Points per game - {}\nAvg RAT - {}""".format(map_name, map_wad, map_games,
-                                                 map_frags_round, map_points_round, map_rat_round))
+                    \nAvg Points per game - {}\nAvg RAT - {}""".format(map_name,
+                                                                       map_wad,
+                                                                       map_games,
+                                                                       map_frags_round,
+                                                                       map_points_round,
+                                                                       map_rat_round))
 
 def setup(bot):
     bot.add_cog(Stats(bot))
-
-
