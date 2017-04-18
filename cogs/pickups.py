@@ -1,51 +1,57 @@
-from discord.ext import commands
 import asyncio
+from discord.ext import commands
 
 player_set = set()
 players_for_priv = 6
 
 class Pickups():
+    """Pickups - all commands related to Pickup-Game (PUG) Management."""
     def __init__(self, bot):
         self.bot = bot
 
     @commands.command(pass_context=True, ignore_extra=False)
     async def add(self, ctx):
+        """!add - adds the author (you) to the pickup list.
+         Notifying others you are willing to play."""
+
         player_set.add(ctx.message.author)
+
         if len(player_set) == players_for_priv:
-            await self.bot.say("""{} your game is ready! Join the WDL priv-CTF server: password = season4""".format(
-                ", ".join([all.mention for all in player_set])))
+            player_mentions = ", ".join([all.mention for all in player_set])
+            await self.bot.say("""{} your game is ready! Join the FUCKING SERVER"""
+                               """ password = season4""".format(player_mentions))
             while player_set:
                 player_set.pop()
-
         else:
             await self.bot.say("({}/{}) added, {} more needed for Priv CTF.".format(
                 len(player_set), players_for_priv, (players_for_priv - len(player_set))))
-
         await asyncio.sleep(3600)
-
         try:
             player_set.remove(ctx.message.author)
-            await self.bot.say("{} has been auto-removed from privlist".format(ctx.message.author))
-
+            await self.bot.say("{} has been removed from queue".format(ctx.message.author))
         except KeyError:
             pass
 
     @commands.command(pass_context=True)
     async def remove(self, ctx):
+        """!remove - removes the author (you) from the pickup queue"""
+
         player_set.remove(ctx.message.author)
-        await self.bot.say("""You have been removed from the list. {}/{} added. {} needed for a game.""".format(
-                        len(player_set), players_for_priv, (players_for_priv - len(player_set))))
+
+        await self.bot.say("""You have been removed from the queue."""
+                           """ CTF ({}/{})""".format(len(player_set),
+                                                     players_for_priv))
 
     @commands.command(pass_context=True)
-    async def who(self, ctx):
+    async def who(self):
+        """!who - tells who is currently !added."""
+
         player_string = ", ".join(str(any) for any in player_set)
 
         if not player_set:
             await self.bot.say("None added!")
-
         elif player_set:
             await self.bot.say("Players added: {}".format(player_string))
-
         else:
             pass
 
