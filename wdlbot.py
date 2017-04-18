@@ -41,8 +41,8 @@ map_rat_team = pd.read_excel(workbook, "Map RAT by Team", index_col=[0])
 
 http = aiohttp.ClientSession()
 
-#background process to check if theres a game today. Runs every 12 hours
 async def gametime_checker():
+    """Background Process to alert the channel if there is a game today. Runs every 12 hours"""
     await bot.wait_until_ready()
     counter = 0
     channel = discord.Object(id="157946982567116800")
@@ -85,7 +85,10 @@ async def gametime_checker():
                 await bot.send_message(channel, "**{} vs {}** - today {}/{} at {}:{} EST!".format(
                     matchups[(date_objects.index(obj) * 2)],
                     matchups[(date_objects.index(obj) * 2) + 1],
-                    obj.month, obj.day, obj.hour, obj.minute))
+                    obj.month,
+                    obj.day,
+                    obj.hour,
+                    obj.minute))
             else:
                 pass
 
@@ -95,7 +98,10 @@ async def gametime_checker():
                 await bot.send_message(channel, "**{} @ {}** - today {}/{} at {}:{} EST!".format(
                     playoff_matchups[(date_obj_playoffs.index(obj) * 2)],
                     playoff_matchups[(date_obj_playoffs.index(obj) * 2) + 1],
-                    obj.month, obj.day, obj.hour, obj.minute))
+                    obj.month,
+                    obj.day,
+                    obj.hour,
+                    obj.minute))
             else:
                 pass
 
