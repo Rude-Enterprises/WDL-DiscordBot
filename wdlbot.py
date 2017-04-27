@@ -112,10 +112,12 @@ async def gametime_checker():
 
 @bot.event
 async def on_ready():
-    print('Logged in as')
+    print("Logged in as")
     print(bot.user.name)
     print(bot.user.id)
-    print('------')
+    print("------")
+    print("Onward and Upward")
+    print("------")
 
 
 @bot.event
@@ -173,7 +175,7 @@ async def on_message(message):
     await bot.process_commands(message)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
 
     sys.path.insert(1, os.getcwd() + "/cogs/")  # this allows the cogs in the cogs folder to be loaded
 
