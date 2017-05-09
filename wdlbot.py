@@ -55,7 +55,7 @@ async def gametime_checker():
         playoff_team_re = r"#[0-9]\s[\w\s]+\s\[...\]\s\(MAP[0-9]+\)"
         team_str = r"([\w]+)+\s\[...\]"
 
-        #BeautifulSoup stuff used for gametime_checker, need to convert to aiohttp at some point
+        #Processing WDL.org with BS
         resp = await http.get("http://doomleague.org/")
         sauce = await resp.text()
         soup = bs.BeautifulSoup(sauce, "lxml")
