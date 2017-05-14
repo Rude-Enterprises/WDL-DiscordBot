@@ -22,14 +22,14 @@ class Web():
     @commands.command()
     async def gametime(self):
         """!gametime - returns a list of gametimes."""
-        rege_str = r"Gametime:\s[\w]+,\s[\w]{3}\s[0-9]+\s@\s[0-9]+:[0-9][0-9]PM\sEST"
-        playoff_gametime_re = r"Gametime:\s[\w]+,\s[\w]{3}\s[0-9]+\s@\s[0-9]+:[0-9][0-9]PM\sEDT"
+        gametime_regex = r"Gametime:\s[\w]+,\s[\w]{3}\s[0-9]+\s@\s[0-9]+:[0-9][0-9]PM\sEST"
+        playoff_gametime_regex = r"Gametime:\s[\w]+,\s[\w]{3}\s[0-9]+\s@\s[0-9]+:[0-9][0-9]PM\sEDT"
 
         resp = await http.get("http://doomleague.org/")
         sauce = await resp.text()
         soup = bs.BeautifulSoup(sauce, "lxml")
-        game_times = soup.find_all(text=re.compile(rege_str))
-        game_times_playoffs = soup.find_all(text=re.compile(playoff_gametime_re))
+        game_times = soup.find_all(text=re.compile(gametime_regex))
+        game_times_playoffs = soup.find_all(text=re.compile(playoff_gametime_regex))
 
         if game_times or game_times_playoffs:
             await self.bot.say("{} , {}".format(game_times, game_times_playoffs))
@@ -89,6 +89,7 @@ class Web():
                                                  obj.minute))
             else:
                 pass
+
 
 def setup(bot):
     bot.add_cog(Web(bot))
