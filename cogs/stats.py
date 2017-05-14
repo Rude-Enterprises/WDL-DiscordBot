@@ -34,14 +34,14 @@ class Stats():
     @commands.command()
     async def randstat(self):
         """!randstat - returns a random stat."""
-        randsheet = pandas_sheets[random.randint(0, 8)]
-        index_length = len(randsheet.index)
-        col_length = len(randsheet.columns)
-        player_or_team_id = randsheet.index[random.randint(1, (index_length - 1))]
-        stat_name = randsheet.columns[random.randint(0, (col_length - 1))]
+        random_sheet = pandas_sheets[random.randint(0, 8)]
+        index_length = len(random_sheet.index)
+        col_length = len(random_sheet.columns)
+        player_or_team_id = random_sheet.index[random.randint(1, (index_length - 1))]
+        stat_name = random_sheet.columns[random.randint(0, (col_length - 1))]
 
-        if randsheet.name == "Team Stats":
-            random_team_stat = randsheet.loc[player_or_team_id, stat_name]
+        if random_sheet.name == "Team Stats":
+            random_team_stat = random_sheet.loc[player_or_team_id, stat_name]
             team_str = str(lb.team_dict[player_or_team_id])
             team_str_season = team_str[4]
             team_str_3char = team_str[:3]
@@ -51,17 +51,17 @@ class Stats():
                                                                       lb.team_dict_two[team_str_final],
                                                                       random_team_stat, stat_name))
         else:
-            random_stat = randsheet.loc[player_or_team_id, stat_name]
-            await self.bot.say("```{}\n{} had {} {}```".format(randsheet.name,
+            random_stat = random_sheet.loc[player_or_team_id, stat_name]
+            await self.bot.say("```{}\n{} had {} {}```".format(random_sheet.name,
                                                                player_or_team_id,
                                                                random_stat,
                                                                stat_name))
 
     @commands.command()
-    async def top(self, num: int, statname: str):
+    async def top(self, num: int, stat_name: str):
         """!top num statname - returns the top x performances of the selected stat."""
         try:
-            stat = lb.stat_dict[statname.lower()]
+            stat = lb.stat_dict[stat_name.lower()]
             rounded_sheet = wdl.all_rounds.round(decimals=2)
             # top_sheet = all_rounds.nlargest(num, stat)
             # stat = lb.stat_dict[statname.lower()]
@@ -72,10 +72,10 @@ class Stats():
             pass
 
     @commands.command(name="bot")
-    async def _bottom(self, num: int, statname: str):
+    async def _bottom(self, num: int, stat_name: str):
         """!bot num statname - returns the bottom x performances of the selected stat."""
         try:
-            stat = lb.stat_dict[statname.lower()]
+            stat = lb.stat_dict[stat_name.lower()]
             rounded_sheet = wdl.all_rounds.round(decimals=2)
             rounded_sheet_dropna = rounded_sheet.dropna(axis=0, how="any")
             bot_sheet = rounded_sheet_dropna.sort_values(stat).head(num)[[stat]]
@@ -84,10 +84,10 @@ class Stats():
             pass
 
     @commands.command()
-    async def avg(self, statname: str):
+    async def avg(self, stat_name: str):
         """!avg statname - returns the all-time average of the selected stat."""
         try:
-            stat = lb.stat_dict[statname.lower()]
+            stat = lb.stat_dict[stat_name.lower()]
             stat_mean = wdl.all_rounds[stat].mean()
             stat_mean_round = round(stat_mean, 2)
             await self.bot.say("All time average {} per round: {}".format(stat, stat_mean_round))
