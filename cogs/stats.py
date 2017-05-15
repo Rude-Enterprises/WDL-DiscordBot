@@ -36,9 +36,9 @@ class Stats():
         """!randstat - returns a random stat."""
         random_sheet = pandas_sheets[random.randint(0, 8)]
         index_length = len(random_sheet.index)
-        col_length = len(random_sheet.columns)
+        column_length = len(random_sheet.columns)
         player_or_team_id = random_sheet.index[random.randint(1, (index_length - 1))]
-        stat_name = random_sheet.columns[random.randint(0, (col_length - 1))]
+        stat_name = random_sheet.columns[random.randint(0, (column_length - 1))]
 
         if random_sheet.name == "Team Stats":
             random_team_stat = random_sheet.loc[player_or_team_id, stat_name]
