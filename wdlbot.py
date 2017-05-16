@@ -126,13 +126,13 @@ async def on_message(message):
     message content to infer the command rather than writing 100+ @command.commands."""
 
     message_split = message.content.split()
-    message_lower = message.content.lower()
-    message_upper = message.content.upper()
-    message_lower_split = message_lower.split()
-    message_upper_split = message_upper.split()
+    message_lower_split = message.content.lower().split()
+    message_upper_split = message.content.upper().split()
+
+    #these 3 variables are for !<team> <number> <stat>
     first_message_string = str(message_upper_split[0])
-    first_message_slice = first_message_string[1:]
-    first_message_slice_upper = first_message_slice.upper()
+    team_acronym = first_message_string[1:]
+    first_message_slice_upper = team_acronym.upper()
 
     #bot will only work in WDL, Odamex, and testing channels
     if (message.channel.id != cfg.wdl_stats_channelid and
@@ -140,7 +140,7 @@ async def on_message(message):
             message.channel.id != cfg.bot_test_channelid):
         return
 
-    ##!<player> <stat>
+    #PLAYER LIFETIME STATS !<player> <stat>
     elif message_lower_split[0] in lb.player_dict and message_lower_split[1] in lb.stat_dict:
         player_stat = player_totals.ix[lb.player_dict[message_lower_split[0]],
                                        lb.stat_dict[message_lower_split[1]]]
@@ -149,7 +149,7 @@ async def on_message(message):
             lb.player_dict[message_lower_split[0]], lb.stat_dict[message_lower_split[1]],
             player_stat_round))
 
-    #!<team> <number> <stat>
+    #TEAM SEASON STATS  !<team> <number> <stat>
     elif message_lower_split[0] in lb.team_dict_two and len(message_lower_split) == 3:
         team_dict_inv_key = (first_message_slice + " " + str(message_lower_split[1]))
         if team_dict_inv_key not in lb.team_dict_inverse:
