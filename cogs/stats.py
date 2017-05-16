@@ -3,7 +3,6 @@ from discord.ext import commands
 import libraries as lb
 import wdlbot as wdl
 
-
 wdl.all_time_playoff.name = "All time Playoffs"
 wdl.season7.name = "Season 7"
 wdl.season6.name = "Season 6"
@@ -30,6 +29,25 @@ class Stats():
     """Stats holds all statistical analysis commands that can be used in Discord Chat."""
     def __init__(self, bot):
         self.bot = bot
+
+    @commands.command()
+    async def lifetime(self, player: str):
+
+        try:
+            rating = round(wdl.player_totals.ix[player, "RAT"], 2)
+            frags = wdl.player_totals.ix[player, "Frags"]
+            kdr = round(wdl.player_totals.ix[player, "K/D"], 2)
+            damage = wdl.player_totals.ix[player, "DMG"]
+            defenses = wdl.player_totals.ix[player, "DEF"]
+            captures = wdl.player_totals.ix[player, "Caps"]
+            pcaptures = wdl.player_totals.ix[player, "PCaps"]
+            await self.bot.say("```{} lifetime stats: \n\nRAT - {}\nFrags - {}\nK/D - {}\n"
+                               "Damage - {}\nDefenses - {}\nCaptures - {}\nPCaptures - {}```".format(
+                                player, rating, frags, kdr, damage, defenses, captures, pcaptures))
+
+        except KeyError:
+            await self.bot.say("{} doesnt exist . . . ".format(player))
+
 
     @commands.command()
     async def randstat(self):
