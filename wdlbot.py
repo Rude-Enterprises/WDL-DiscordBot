@@ -145,12 +145,17 @@ async def on_message(message):
 
     #PLAYER LIFETIME STATS !<player> <stat>
     elif message_lower_split[0] in lb.player_dict and message_lower_split[1] in lb.stat_dict:
-        player_stat = player_totals.ix[lb.player_dict[message_lower_split[0]],
+
+        try:
+            player_stat = player_totals.ix[lb.player_dict[message_lower_split[0]],
                                        lb.stat_dict[message_lower_split[1]]]
-        player_stat_round = round(player_stat, 2)
-        await bot.send_message(message.channel, "```{} lifetime {}: {} ```".format(
-            lb.player_dict[message_lower_split[0]], lb.stat_dict[message_lower_split[1]],
-            player_stat_round))
+            player_stat_round = round(player_stat, 2)
+            await bot.send_message(message.channel, "```{} lifetime {}: {} ```".format(
+                lb.player_dict[message_lower_split[0]], lb.stat_dict[message_lower_split[1]],
+                player_stat_round))
+
+        except discord.ext.commands.errors.CommandNotFound:
+            pass
 
     #TEAM SEASON STATS  !<team> <number> <stat>
     elif message_lower_split[0] in lb.team_dict_two and len(message_lower_split) == 3:
