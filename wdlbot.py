@@ -39,13 +39,16 @@ map_rat_player = pd.read_excel(workbook, "Map RAT by Player", index_col=[1])
 map_rat_team = pd.read_excel(workbook, "Map RAT by Team", index_col=[0])
 
 
-http = aiohttp.ClientSession()
+
 
 async def gametime_checker():
     """Background Process to alert the channel if there is a game today. Runs every 12 hours"""
+
     await bot.wait_until_ready()
     counter = 0
     channel = discord.Object(id="157946982567116800")
+    http = aiohttp.ClientSession()
+
     while not bot.is_closed:
         counter += 1
 
@@ -132,7 +135,7 @@ async def on_message(message):
     #these 3 variables are for !<team> <number> <stat>
     first_message_string = str(message_upper_split[0])
     team_acronym = first_message_string[1:]
-    first_message_slice_upper = team_acronym.upper()
+    team_acronym_upper = team_acronym.upper()
 
     #bot will only work in WDL, Odamex, and testing channels
     if (message.channel.id != cfg.wdl_stats_channelid and
@@ -151,9 +154,9 @@ async def on_message(message):
 
     #TEAM SEASON STATS  !<team> <number> <stat>
     elif message_lower_split[0] in lb.team_dict_two and len(message_lower_split) == 3:
-        team_dict_inv_key = (first_message_slice + " " + str(message_lower_split[1]))
+        team_dict_inv_key = (team_acronym + " " + str(message_lower_split[1]))
         if team_dict_inv_key not in lb.team_dict_inverse:
-            await bot.send_message(message.channel, "No team {} found for Season {}".format(first_message_slice_upper,
+            await bot.send_message(message.channel, "No team {} found for Season {}".format(team_acronym_upper,
                                                                                             message_split[1]))
         else:
             team_stat = team_stats.loc[lb.team_dict_inverse[team_dict_inv_key],
@@ -165,9 +168,9 @@ async def on_message(message):
                                                                                  team_stat_round))
 
     elif message_lower_split[0] in lb.team_dict_two and len(message_lower_split) == 2:
-        team_dict_inv_key = (first_message_slice + " " + str(message_lower_split[1]))
+        team_dict_inv_key = (team_acronym + " " + str(message_lower_split[1]))
         if team_dict_inv_key not in lb.team_dict_inverse:
-            await bot.send_message(message.channel, "No team {} found for Season {}".format(first_message_slice_upper,
+            await bot.send_message(message.channel, "No team {} found for Season {}".format(team_acronym_upper,
                                                                                             message_split[1]))
         else:
             pass
