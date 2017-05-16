@@ -130,13 +130,13 @@ class Stats():
             map_games = wdl.map_data.loc[num, "GP"]
             map_points_pergame = wdl.map_data.loc[num, "POINTS"]
             map_points_round = round(map_points_pergame, 2)
-            await self.bot.say("""**{}** from {} \n\n{} games taken place \nAvg Frags per player - {}\
-                    \nAvg Points per game - {}\nAvg RAT - {}""".format(map_name,
-                                                                       map_wad,
-                                                                       map_games,
-                                                                       map_frags_round,
-                                                                       map_points_round,
-                                                                       map_rat_round))
+            await self.bot.say("**{}** from {} \n\n{} games taken place \nAvg Frags per player - {}\n"
+                    "Avg Points per game - {}\nAvg RAT - {}".format(map_name,
+                                                                    map_wad,
+                                                                    map_games,
+                                                                    map_frags_round,
+                                                                    map_points_round,
+                                                                    map_rat_round))
 
 def setup(bot):
     bot.add_cog(Stats(bot))
