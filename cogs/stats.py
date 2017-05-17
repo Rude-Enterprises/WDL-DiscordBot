@@ -32,8 +32,10 @@ class Stats():
 
     @commands.command()
     async def lifetime(self, player: str):
+        """!lifeime <player> - returns an overview of a players key lifetime stats."""
 
         try:
+
             rating = round(wdl.player_totals.ix[player, "RAT"], 2)
             frags = wdl.player_totals.ix[player, "Frags"]
             kdr = round(wdl.player_totals.ix[player, "K/D"], 2)
@@ -41,6 +43,7 @@ class Stats():
             defenses = wdl.player_totals.ix[player, "DEF"]
             captures = wdl.player_totals.ix[player, "Caps"]
             pcaptures = wdl.player_totals.ix[player, "PCaps"]
+
             await self.bot.say("```{} lifetime stats: \n\nRAT - {}\nFrags - {}\nK/D - {}\n"
                                "Damage - {}\nDefenses - {}\nCaptures - {}\nPCaptures - {}```".format(
                                 player, rating, frags, kdr, damage, defenses, captures, pcaptures))
