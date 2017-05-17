@@ -1,3 +1,5 @@
+![wdlbig](https://cloud.githubusercontent.com/assets/24723883/26137242/0887fa2c-3a8f-11e7-82bf-34a4bde7dbc0.png)
+
 # WDL-DiscordBot
 
           **work in progress**
