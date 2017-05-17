@@ -1,8 +1,8 @@
 ![wdlbig](https://cloud.githubusercontent.com/assets/24723883/26137242/0887fa2c-3a8f-11e7-82bf-34a4bde7dbc0.png)
 
 <p align="center">
-sdfg
-</p># WDL-DiscordBot
+# WDL-DiscordBot
+</p>
 
           **work in progress**
 A Discord bot made for the [World Doom League](http://doomleague.org "WDL")
