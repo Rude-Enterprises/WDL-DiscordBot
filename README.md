@@ -1,10 +1,10 @@
 ![wdlbig](https://cloud.githubusercontent.com/assets/24723883/26137242/0887fa2c-3a8f-11e7-82bf-34a4bde7dbc0.png)
 
 <p align="center">
-# WDL-DiscordBot
+<h1> WDL-DiscordBot</h1>
 </p>
+<p align="center"> **work in progress**</p>
 
-          **work in progress**
 A Discord bot made for the [World Doom League](http://doomleague.org "WDL")
 
 Many uses include data analysis with WDL statistics, managing pickup games, and more !   
