@@ -12,8 +12,11 @@ WDL Bot interacts with **Jwarrier's** comprehensive stats of the WDL, the public
 
 A few screenshots below:
 
-![gameannounce](https://cloud.githubusercontent.com/assets/24723883/26137334/7cd7ca38-3a8f-11e7-82e9-dc188b8a5a93.jpg)
-![topfrags](https://cloud.githubusercontent.com/assets/24723883/26137520/9dde021e-3a90-11e7-882b-2a7a1e9271e8.jpg)
+Announcements:  
+![gameannounce](https://cloud.githubusercontent.com/assets/24723883/26137334/7cd7ca38-3a8f-11e7-82e9-dc188b8a5a93.jpg)  
+Stats:  
+![topfrags](https://cloud.githubusercontent.com/assets/24723883/26137520/9dde021e-3a90-11e7-882b-2a7a1e9271e8.jpg)  
+Pickup Management:  
 ![priv2](https://cloud.githubusercontent.com/assets/24723883/26137528/a87452f0-3a90-11e7-9f3a-923d3582eea2.jpg)
 
 
