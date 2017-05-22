@@ -51,6 +51,20 @@ class Stats():
         except KeyError:
             await self.bot.say("{} doesnt exist . . . ".format(player))
 
+    @commands.command()
+    async def team(self, teamname: str, season):
+        team_key = teamname.upper() + " " + str(season)
+
+        if team_key in lb.team_dict_inverse:
+            rating = round(wdl.team_stats.ix[lb.team_dict_inverse[team_key], "RAT"], 2)
+            frags = wdl.team_stats.ix[lb.team_dict_inverse[team_key], "Frags"]
+            kdr = round(wdl.team_stats.ix[lb.team_dict_inverse[team_key], "K/D"], 2)
+            wins = wdl.team_stats.ix[lb.team_dict_inverse[team_key], "Win%"]
+            points = wdl.team_stats.ix[lb.team_dict_inverse[team_key], "Points"]
+            await self.bot.say("```{} Season {}\n\nRat - {}\nFrags - {}\nKDR - {}\nPoints - {}\nWin % - {}```".format(
+                                teamname.upper(), season, rating, frags, kdr, points, wins))
+        else:
+            await self.bot.say("invalid arguments . . .")
 
     @commands.command()
     async def randstat(self):
