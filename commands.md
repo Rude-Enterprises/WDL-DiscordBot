@@ -1,6 +1,7 @@
 ## Commands  
 ### STATS:  
 !lifetime \<player> - returns overview of lifetime stats of given \<player>  
+!team \<teamname> \<season - returns team performance overview for given \<season>   
 !\<player> \<stat> - returns a Lifetime \<stat> for the given \<player>. See below for \<stat>  
 !\<team> \<number> \<stat> - returns a team stat for the given season \<number>  
 !randstat - returns a random stat  
