@@ -12,6 +12,9 @@ class Web():
     def __init__(self, bot):
         self.bot = bot
 
+    async def noGamesToday(self):
+        await self.bot.say("No games today!")
+
     @commands.command()
     async def standings(self):
         """!standings - returns current WDL season standings."""
@@ -76,7 +79,7 @@ class Web():
                                                  obj.minute))
 
             else:
-                pass
+                await Web.noGamesToday()
 
         for obj in date_objects_playoffs:
             if obj.day == tday.day and obj.month == tday.month and tday.hour < obj.hour:
@@ -88,7 +91,7 @@ class Web():
                                                  obj.hour,
                                                  obj.minute))
             else:
-                pass
+                await Web.noGamesToday(self)
 
 
 def setup(bot):
