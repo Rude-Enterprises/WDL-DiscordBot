@@ -1,117 +1,54 @@
-import re
 import sys
 import os
-import asyncio
-from datetime import datetime
 from discord.ext import commands
 import libraries as lb
 import cfg
 import pandas as pd
-import bs4 as bs
-import aiohttp
 import discord
+from cogs import process
 
 initial_extensions = ["misc", "stats", "webcmds", "pickups"]
 
 bot = commands.Bot(command_prefix="!", description="Hello I am a bot ! beepboop.")
 bot.remove_command("help")
 
-#I FORGET WHY THIS IS HERE LOL
-pd.set_option('display.multi_sparse', True)
-
 #all sheets to be used from Jwarrier's wdlstatsv4 read with Pandas
-workbook = pd.ExcelFile("C:/Users/Jesse/PycharmProjects/pandas/WDLSTATSv4.xlsx")
-player_totals = pd.read_excel(workbook, "PT Player Totals")
+workbook = pd.ExcelFile("C:/Users/Jesse/Desktop/WDLSTATSv4.xlsx")
+player_totals = pd.read_excel(workbook, "PT Player Totals", names=lb.player_totals_column_names)
 player_avg = pd.read_excel(workbook, "PT PlayerAVG")
-all_time_playoff = pd.read_excel(workbook, "ALL TIME Playoffs", skiprows=[0], index_col=[0])
-season7 = pd.read_excel(workbook, "Season 7", skiprows=[0], index_col=[0])
-season6 = pd.read_excel(workbook, "Season 6", skiprows=[0], index_col=[0])
-season5 = pd.read_excel(workbook, "Season 5", skiprows=[0], index_col=[0])
-season4 = pd.read_excel(workbook, "Season 4", skiprows=[0], index_col=[0])
-season3 = pd.read_excel(workbook, "Season 3", skiprows=[0], index_col=[0])
-season2 = pd.read_excel(workbook, "Season 2", skiprows=[0], index_col=[0])
-season1 = pd.read_excel(workbook, "Season 1", skiprows=[0], index_col=[0])
-team_stats = pd.read_excel(workbook, "Team Stats", skiprows=[0], index_col=[1])
-player_by_season = pd.read_excel(workbook, "Player By Season")
-all_rounds = pd.read_excel(workbook, "All Rounds", index_col=[0])
+all_time_playoff = pd.read_excel(workbook, "ALL TIME Playoffs", skiprows=[0], names=lb.alltime_playoff_column_names)
+season7 = pd.read_excel(workbook, "Season 7", skiprows=[0], names=lb.season_column_names)
+season6 = pd.read_excel(workbook, "Season 6", skiprows=[0], names=lb.season_column_names)
+season5 = pd.read_excel(workbook, "Season 5", skiprows=[0], names=lb.season_column_names)
+season4 = pd.read_excel(workbook, "Season 4", skiprows=[0], names=lb.season_column_names)
+season3 = pd.read_excel(workbook, "Season 3", skiprows=[0], names=lb.season_column_names)
+season2 = pd.read_excel(workbook, "Season 2", skiprows=[0], names=lb.season_column_names)
+season1 = pd.read_excel(workbook, "Season 1", skiprows=[0], names=lb.season_column_names)
+team_stats = pd.read_excel(workbook, "Team Stats", skiprows=[0], index_col=[1], names=lb.team_stats_column_names)
+all_rounds = pd.read_excel(workbook, "All Rounds", names=lb.all_rounds_column_names, parse_cols=20)
 map_data = pd.read_excel(workbook, "Map Data", index_col=[11])
 map_rat_player = pd.read_excel(workbook, "Map RAT by Player", index_col=[1])
 map_rat_team = pd.read_excel(workbook, "Map RAT by Team", index_col=[0])
 
+def rename_dataframe_index_player(dataframe):
+    dataframe = dataframe.dropna()
+    dataframe = dataframe.reset_index().dropna().set_index("nick")
+    dataframe = dataframe.rename(lambda x: x.lower())
+    dataframe = dataframe.drop(["index"], axis=1)
+    return dataframe
+
+player_totals = rename_dataframe_index_player(player_totals)
+season7 = rename_dataframe_index_player(season7)
+season6 = rename_dataframe_index_player(season6)
+season5 = rename_dataframe_index_player(season5)
+season4 = rename_dataframe_index_player(season4)
+season3 = rename_dataframe_index_player(season3)
+season2 = rename_dataframe_index_player(season2)
+season1 = rename_dataframe_index_player(season1)
+all_rounds = all_rounds.dropna()
+all_rounds = all_rounds.reset_index().dropna().set_index("nick")
 
 
-
-async def gametime_checker():
-    """Background Process to alert the channel if there is a game today. Runs every 12 hours"""
-
-    await bot.wait_until_ready()
-    counter = 0
-    channel = discord.Object(id="157946982567116800")
-    http = aiohttp.ClientSession()
-
-    while not bot.is_closed:
-        counter += 1
-
-        #regexs for gametime_checker
-        gametime_str = r"Gametime:\s[\w]+,\s[\w]{3}\s[0-9]+\s@\s[0-9]+:[0-9][0-9]PM\sEST"
-        playoff_gametime_re = r"Gametime:\s[\w]+,\s[\w]{3}\s[0-9]+\s@\s[0-9]+:[0-9][0-9]PM\sEDT"
-        playoff_team_re = r"#[0-9]\s[\w\s]+\s\[...\]\s\(MAP[0-9]+\)"
-        team_str = r"([\w]+)+\s\[...\]"
-
-        #Processing WDL.org with BS
-        resp = await http.get("http://doomleague.org/")
-        sauce = await resp.text()
-        soup = bs.BeautifulSoup(sauce, "lxml")
-        game_times = soup.find_all(text=re.compile(gametime_str))
-        game_times_playoffs = soup.find_all(text=re.compile(playoff_gametime_re))
-        del game_times_playoffs[-1]
-
-        #lists of all found gametime regexs, regular season, and playoffs
-        matchups = soup.find_all(text=re.compile(team_str))
-        playoff_matchups = soup.find_all(text=re.compile(playoff_team_re))
-
-        #gametime regex's converted to datetime objects and put in these lists
-        date_objects = []
-        date_obj_playoffs = []
-        tday = datetime.today()
-
-        #gametime regex's converted to datetime objects
-        for regexs in game_times:
-            date_objects.append(datetime.strptime(regexs, "Gametime: %A, %b %d @ %I:%M%p EST"))
-
-        for regexs in game_times_playoffs:
-            date_obj_playoffs.append(datetime.strptime(regexs, "Gametime: %A, %b %d @ %I:%M%p EDT"))
-
-        #checking if there is a game today
-        for obj in date_objects:
-            if obj.day == tday.day and obj.month == tday.month and tday.hour < obj.hour:
-                await bot.send_message(channel, "**{} vs {}** - today {}/{} at {}:{} EST!".format(
-                    matchups[(date_objects.index(obj) * 2)],
-                    matchups[(date_objects.index(obj) * 2) + 1],
-                    obj.month,
-                    obj.day,
-                    obj.hour,
-                    obj.minute))
-            else:
-                pass
-
-        #checking if there is a playoff game today
-        for obj in date_obj_playoffs:
-            if obj.day == tday.day and obj.month == tday.month and tday.hour < obj.hour:
-                await bot.send_message(channel, "**{} @ {}** - today {}/{} at {}:{} EST!".format(
-                    playoff_matchups[(date_obj_playoffs.index(obj) * 2)],
-                    playoff_matchups[(date_obj_playoffs.index(obj) * 2) + 1],
-                    obj.month,
-                    obj.day,
-                    obj.hour,
-                    obj.minute))
-            else:
-                pass
-
-        # task runs every 12 hours
-        await asyncio.sleep(43200)
-
-    await http.close()
 
 @bot.event
 async def on_ready():
@@ -131,11 +68,7 @@ async def on_message(message):
     message_split = message.content.split()
     message_lower_split = message.content.lower().split()
     message_upper_split = message.content.upper().split()
-
-    #these 3 variables are for !<team> <number> <stat>
-    first_message_string = str(message_upper_split[0])
-    team_acronym = first_message_string[1:]
-    team_acronym_upper = team_acronym.upper()
+    player_name = message_lower_split[0][1:]
 
     #bot will only work in WDL, Odamex, and testing channels
     if (message.channel.id != cfg.wdl_stats_channelid and
@@ -144,41 +77,39 @@ async def on_message(message):
         return
 
     #PLAYER LIFETIME STATS !<player> <stat>
-    elif message_lower_split[0] in lb.player_dict and message_lower_split[1] in lb.stat_dict:
+    elif player_name in player_totals.index and message_lower_split[1] in player_totals.columns:
 
         try:
-            player_stat = player_totals.ix[lb.player_dict[message_lower_split[0]],
-                                       lb.stat_dict[message_lower_split[1]]]
+            player_stat = player_totals.ix[player_name, message_lower_split[1]]
             player_stat_round = round(player_stat, 2)
             await bot.send_message(message.channel, "```{} lifetime {}: {} ```".format(
-                lb.player_dict[message_lower_split[0]], lb.stat_dict[message_lower_split[1]],
-                player_stat_round))
+                player_name.capitalize(), message_lower_split[1], player_stat_round))
 
         except discord.ext.commands.errors.CommandNotFound:
             pass
 
     #TEAM SEASON STATS  !<team> <number> <stat>
     elif message_lower_split[0] in lb.team_dict_two and len(message_lower_split) == 3:
+        first_message_string = str(message_upper_split[0])
+        team_acronym = first_message_string[1:]
+        team_acronym_upper = team_acronym.upper()
         team_dict_inv_key = (team_acronym + " " + str(message_lower_split[1]))
+
         if team_dict_inv_key not in lb.team_dict_inverse:
             await bot.send_message(message.channel, "No team {} found for Season {}".format(team_acronym_upper,
                                                                                             message_split[1]))
         else:
-            team_stat = team_stats.loc[lb.team_dict_inverse[team_dict_inv_key],
-                                       lb.stat_dict[message_lower_split[2]]]
+            team_stat = team_stats.loc[lb.team_dict_inverse[team_dict_inv_key], message_lower_split[2]]
             team_stat_round = round(team_stat, 2)
-            await bot.send_message(message.channel, "{} Season {} {}: {}".format(lb.team_dict_two[message_lower_split[0]],
+            team_name = lb.team_dict_two[message_lower_split[0]]
+            stat_name = message_lower_split[2].capitalize()
+            await bot.send_message(message.channel, "{} Season {} {}: {}".format(team_name,
                                                                                  message_split[1],
-                                                                                 lb.stat_dict[message_lower_split[2]],
+                                                                                 stat_name,
                                                                                  team_stat_round))
 
-    elif message_lower_split[0] in lb.team_dict_two and len(message_lower_split) == 2:
-        team_dict_inv_key = (team_acronym + " " + str(message_lower_split[1]))
-        if team_dict_inv_key not in lb.team_dict_inverse:
-            await bot.send_message(message.channel, "No team {} found for Season {}".format(team_acronym_upper,
-                                                                                            message_split[1]))
-        else:
-            pass
+    else:
+        pass
 
     await bot.process_commands(message)
 
@@ -190,5 +121,5 @@ if __name__ == "__main__":
     for extension in initial_extensions:
         bot.load_extension(extension)  # This adds the cogs listed in initial_extensions to the bot
 
-    bot.loop.create_task(gametime_checker())
+    bot.loop.create_task(process.gametime_checker())
     bot.run(cfg.TOKEN)
