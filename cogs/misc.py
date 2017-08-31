@@ -9,7 +9,7 @@ class Misc:
     async def more(self):  # commands have to be inside the cog class
         """!more - press the link for more stats."""
 
-        await self.bot.say("More cool stats can be found here:"
+        await self.bot.say("More cool stats can be found here:\n"
                            "http://doomleague.org/forums/index.php?board=8.0")
 
     @commands.command()
