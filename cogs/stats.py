@@ -33,20 +33,20 @@ class Stats():
     @commands.command()
     async def lifetime(self, player: str):
         """!lifeime <player> - returns an overview of a players key lifetime stats."""
-
+        player_lower = player.lower()
         try:
 
-            rating = round(wdl.player_totals.ix[player, "RAT"], 2)
-            frags = wdl.player_totals.ix[player, "Frags"]
-            kdr = round(wdl.player_totals.ix[player, "K/D"], 2)
-            damage = wdl.player_totals.ix[player, "DMG"]
-            defenses = wdl.player_totals.ix[player, "DEF"]
-            captures = wdl.player_totals.ix[player, "Caps"]
-            pcaptures = wdl.player_totals.ix[player, "PCaps"]
+            rating = round(wdl.player_totals.ix[player_lower, "rat"], 2)
+            frags = wdl.player_totals.ix[player_lower, "frags"]
+            kdr = round(wdl.player_totals.ix[player_lower, "kdr"], 2)
+            damage = wdl.player_totals.ix[player_lower, "dmg"]
+            defenses = wdl.player_totals.ix[player_lower, "def"]
+            captures = wdl.player_totals.ix[player_lower, "caps"]
+            pcaptures = wdl.player_totals.ix[player_lower, "pcaps"]
 
             await self.bot.say("```{} lifetime stats: \n\nRAT - {}\nFrags - {}\nK/D - {}\n"
                                "Damage - {}\nDefenses - {}\nCaptures - {}\nPCaptures - {}```".format(
-                                player, rating, frags, kdr, damage, defenses, captures, pcaptures))
+                                player.capitalize(), rating, frags, kdr, damage, defenses, captures, pcaptures))
 
         except KeyError:
             await self.bot.say("{} doesnt exist . . . ".format(player))
@@ -56,11 +56,11 @@ class Stats():
         team_key = teamname.upper() + " " + str(season)
 
         if team_key in lb.team_dict_inverse:
-            rating = round(wdl.team_stats.ix[lb.team_dict_inverse[team_key], "RAT"], 2)
-            frags = wdl.team_stats.ix[lb.team_dict_inverse[team_key], "Frags"]
-            kdr = round(wdl.team_stats.ix[lb.team_dict_inverse[team_key], "K/D"], 2)
-            wins = wdl.team_stats.ix[lb.team_dict_inverse[team_key], "Win%"]
-            points = wdl.team_stats.ix[lb.team_dict_inverse[team_key], "Points"]
+            rating = round(wdl.team_stats.ix[lb.team_dict_inverse[team_key], "rat"], 2)
+            frags = wdl.team_stats.ix[lb.team_dict_inverse[team_key], "frags"]
+            kdr = round(wdl.team_stats.ix[lb.team_dict_inverse[team_key], "kdr"], 2)
+            wins = round(wdl.team_stats.ix[lb.team_dict_inverse[team_key], "win%"], 2)
+            points = wdl.team_stats.ix[lb.team_dict_inverse[team_key], "points"]
             await self.bot.say("```{} Season {}\n\nRat - {}\nFrags - {}\nKDR - {}\nPoints - {}\nWin % - {}```".format(
                                 teamname.upper(), season, rating, frags, kdr, points, wins))
         else:
@@ -87,8 +87,13 @@ class Stats():
                                                                       random_team_stat, stat_name))
         else:
             random_stat = random_sheet.loc[player_or_team_id, stat_name]
+            player_capitalize = ""
+            if type(player_or_team_id) == str:
+                player_capitalize += player_or_team_id.capitalize()
+            else:
+                pass
             await self.bot.say("```{}\n{} had {} {}```".format(random_sheet.name,
-                                                               player_or_team_id,
+                                                               player_capitalize,
                                                                random_stat,
                                                                stat_name))
 
@@ -96,11 +101,11 @@ class Stats():
     async def top(self, num: int, stat_name: str):
         """!top num statname - returns the top x performances of the selected stat."""
         try:
-            stat = lb.stat_dict[stat_name.lower()]
+            stat = stat_name.lower()
             rounded_sheet = wdl.all_rounds.round(decimals=2)
             # top_sheet = all_rounds.nlargest(num, stat)
             # stat = lb.stat_dict[statname.lower()]
-            top_sheet = rounded_sheet.sort_values(stat, ascending=False).head(num)[[stat, "SID"]]
+            top_sheet = rounded_sheet.sort_values(stat, ascending=False).head(num)[[stat, "sid"]]
             # top_sheet_rounded = top_sheet.round(decimals=2)
             await self.bot.say("```{}```".format(top_sheet))
         except KeyError:
@@ -110,10 +115,9 @@ class Stats():
     async def _bottom(self, num: int, stat_name: str):
         """!bot num statname - returns the bottom x performances of the selected stat."""
         try:
-            stat = lb.stat_dict[stat_name.lower()]
+            stat = stat_name.lower()
             rounded_sheet = wdl.all_rounds.round(decimals=2)
-            rounded_sheet_dropna = rounded_sheet.dropna(axis=0, how="any")
-            bot_sheet = rounded_sheet_dropna.sort_values(stat).head(num)[[stat]]
+            bot_sheet = rounded_sheet.sort_values(stat).head(num)[[stat]]
             await self.bot.say("```{}```".format(bot_sheet))
         except KeyError:
             pass
@@ -122,10 +126,10 @@ class Stats():
     async def avg(self, stat_name: str):
         """!avg statname - returns the all-time average of the selected stat."""
         try:
-            stat = lb.stat_dict[stat_name.lower()]
+            stat = stat_name.lower()
             stat_mean = wdl.all_rounds[stat].mean()
             stat_mean_round = round(stat_mean, 2)
-            await self.bot.say("All time average {} per round: {}".format(stat, stat_mean_round))
+            await self.bot.say("All time average {} per round: {}".format(stat.capitalize(), stat_mean_round))
 
         except KeyError:
             pass
