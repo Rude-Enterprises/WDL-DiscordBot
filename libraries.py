@@ -1,3 +1,12 @@
+import pandas as pd
+
+def rename_dataframe_index_player(dataframe):
+    dataframe = dataframe.dropna()
+    dataframe = dataframe.reset_index().dropna().set_index("nick")
+    dataframe = dataframe.rename(lambda x: x.lower())
+    dataframe = dataframe.drop(["index"], axis=1)
+    return dataframe
+
 player_totals_column_names = ["nick", "rat", "orat",
                               "drat", "eff", "frags",
                               "kdr", "dmg", "def",
@@ -24,7 +33,7 @@ alltime_playoff_column_names = ["nick", "rat", "orat",
 all_rounds_column_names = ["nick", "team", "rat",
                            "orat", "drat", "eff",
                            "frags", "deaths", "dmg",
-                           "def", "pow", "touch",
+                           "def", "pow", "touches",
                            "ptouches", "caps", "pcaps",
                            "assists", "cap%", "res",
                            "kdr", "id", "sid"]
@@ -38,6 +47,38 @@ team_stats_column_names = ["team", "rat", "orat",
                            "rp", "gp", "season",
                            "eff2", "def2", "spoints",
                            "wins", "losses", "ties"]
+
+#all sheets to be used from Jwarrier's wdlstatsv4 read with Pandas
+workbook = pd.ExcelFile("C:/Users/Jesse/Desktop/WDLSTATSv4.xlsx")
+player_totals = pd.read_excel(workbook, "PT Player Totals", names=player_totals_column_names)
+player_avg = pd.read_excel(workbook, "PT PlayerAVG")
+all_time_playoff = pd.read_excel(workbook, "ALL TIME Playoffs", skiprows=[0], names=alltime_playoff_column_names)
+season7 = pd.read_excel(workbook, "Season 7", skiprows=[0], names=season_column_names)
+season6 = pd.read_excel(workbook, "Season 6", skiprows=[0], names=season_column_names)
+season5 = pd.read_excel(workbook, "Season 5", skiprows=[0], names=season_column_names)
+season4 = pd.read_excel(workbook, "Season 4", skiprows=[0], names=season_column_names)
+season3 = pd.read_excel(workbook, "Season 3", skiprows=[0], names=season_column_names)
+season2 = pd.read_excel(workbook, "Season 2", skiprows=[0], names=season_column_names)
+season1 = pd.read_excel(workbook, "Season 1", skiprows=[0], names=season_column_names)
+team_stats = pd.read_excel(workbook, "Team Stats", skiprows=[0], index_col=[1], names=team_stats_column_names)
+all_rounds = pd.read_excel(workbook, "All Rounds", names=all_rounds_column_names, parse_cols=20)
+map_data = pd.read_excel(workbook, "Map Data", index_col=[11])
+map_rat_player = pd.read_excel(workbook, "Map RAT by Player", index_col=[1])
+map_rat_team = pd.read_excel(workbook, "Map RAT by Team", index_col=[0])
+
+
+#Renaming dataframe indexes
+player_totals = rename_dataframe_index_player(player_totals)
+season7 = rename_dataframe_index_player(season7)
+season6 = rename_dataframe_index_player(season6)
+season5 = rename_dataframe_index_player(season5)
+season4 = rename_dataframe_index_player(season4)
+season3 = rename_dataframe_index_player(season3)
+season2 = rename_dataframe_index_player(season2)
+season1 = rename_dataframe_index_player(season1)
+all_rounds = all_rounds.dropna()
+all_rounds = all_rounds.reset_index().dropna().set_index("nick")
+
 
 stat_dict = {"rat": "RAT",
              "orat": "oRAT",
