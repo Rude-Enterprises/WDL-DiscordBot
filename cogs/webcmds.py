@@ -149,6 +149,6 @@ class Web():
             await self.bot.say("No games on record..")
         else:
             await self.bot.say("Last game took place {}".format(date_objects_playoffs[-1].strftime("%B-%d")))
-            
+
 def setup(bot):
     bot.add_cog(Web(bot))
