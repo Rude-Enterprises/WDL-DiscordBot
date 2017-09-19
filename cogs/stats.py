@@ -111,14 +111,14 @@ class Stats():
         except KeyError:
             pass
 
-    @commands.command(name="bot")
-    async def _bottom(self, num: int, stat_name: str):
-        """!bot num statname - returns the bottom x performances of the selected stat."""
+    @commands.command()
+    async def least(self, num: int, stat_name: str):
+        """!least num statname - returns the bottom x performances of the selected stat."""
         try:
             stat = stat_name.lower()
             rounded_sheet = wdl.all_rounds.round(decimals=2)
-            bot_sheet = rounded_sheet.sort_values(stat).head(num)[[stat]]
-            await self.bot.say("```{}```".format(bot_sheet))
+            least_sheet = rounded_sheet.sort_values(stat).head(num)[[stat]]
+            await self.bot.say("```{}```".format(least_sheet))
         except KeyError:
             pass
 
