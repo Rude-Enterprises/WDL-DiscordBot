@@ -1,27 +1,26 @@
 import random
 from discord.ext import commands
 import libraries as lb
-import wdlbot as wdl
 
-wdl.all_time_playoff.name = "All time Playoffs"
-wdl.season7.name = "Season 7"
-wdl.season6.name = "Season 6"
-wdl.season5.name = "Season 5"
-wdl.season4.name = "Season 4"
-wdl.season3.name = "Season 3"
-wdl.season2.name = "Season 2"
-wdl.season1.name = "Season 1"
-wdl.team_stats.name = "Team Stats"
+lb.all_time_playoff.name = "All time Playoffs"
+lb.season7.name = "Season 7"
+lb.season6.name = "Season 6"
+lb.season5.name = "Season 5"
+lb.season4.name = "Season 4"
+lb.season3.name = "Season 3"
+lb.season2.name = "Season 2"
+lb.season1.name = "Season 1"
+lb.team_stats.name = "Team Stats"
 
-pandas_sheets = (wdl.all_time_playoff,
-                 wdl.season7,
-                 wdl.season6,
-                 wdl.season5,
-                 wdl.season4,
-                 wdl.season3,
-                 wdl.season2,
-                 wdl.season1,
-                 wdl.team_stats
+pandas_sheets = (lb.all_time_playoff,
+                 lb.season7,
+                 lb.season6,
+                 lb.season5,
+                 lb.season4,
+                 lb.season3,
+                 lb.season2,
+                 lb.season1,
+                 lb.team_stats
                 )
 
 
@@ -36,13 +35,13 @@ class Stats():
         player_lower = player.lower()
         try:
 
-            rating = round(wdl.player_totals.ix[player_lower, "rat"], 2)
-            frags = wdl.player_totals.ix[player_lower, "frags"]
-            kdr = round(wdl.player_totals.ix[player_lower, "kdr"], 2)
-            damage = wdl.player_totals.ix[player_lower, "dmg"]
-            defenses = wdl.player_totals.ix[player_lower, "def"]
-            captures = wdl.player_totals.ix[player_lower, "caps"]
-            pcaptures = wdl.player_totals.ix[player_lower, "pcaps"]
+            rating = round(lb.player_totals.ix[player_lower, "rat"], 2)
+            frags = lb.player_totals.ix[player_lower, "frags"]
+            kdr = round(lb.player_totals.ix[player_lower, "kdr"], 2)
+            damage = lb.player_totals.ix[player_lower, "dmg"]
+            defenses = lb.player_totals.ix[player_lower, "def"]
+            captures = lb.player_totals.ix[player_lower, "caps"]
+            pcaptures = lb.player_totals.ix[player_lower, "pcaps"]
 
             await self.bot.say("```{} lifetime stats: \n\nRAT - {}\nFrags - {}\nK/D - {}\n"
                                "Damage - {}\nDefenses - {}\nCaptures - {}\nPCaptures - {}```".format(
@@ -56,11 +55,11 @@ class Stats():
         team_key = teamname.upper() + " " + str(season)
 
         if team_key in lb.team_dict_inverse:
-            rating = round(wdl.team_stats.ix[lb.team_dict_inverse[team_key], "rat"], 2)
-            frags = wdl.team_stats.ix[lb.team_dict_inverse[team_key], "frags"]
-            kdr = round(wdl.team_stats.ix[lb.team_dict_inverse[team_key], "kdr"], 2)
-            wins = round(wdl.team_stats.ix[lb.team_dict_inverse[team_key], "win%"], 2)
-            points = wdl.team_stats.ix[lb.team_dict_inverse[team_key], "points"]
+            rating = round(lb.team_stats.ix[lb.team_dict_inverse[team_key], "rat"], 2)
+            frags = lb.team_stats.ix[lb.team_dict_inverse[team_key], "frags"]
+            kdr = round(lb.team_stats.ix[lb.team_dict_inverse[team_key], "kdr"], 2)
+            wins = round(lb.team_stats.ix[lb.team_dict_inverse[team_key], "win%"], 2)
+            points = lb.team_stats.ix[lb.team_dict_inverse[team_key], "points"]
             await self.bot.say("```{} Season {}\n\nRat - {}\nFrags - {}\nKDR - {}\nPoints - {}\nWin % - {}```".format(
                                 teamname.upper(), season, rating, frags, kdr, points, wins))
         else:
@@ -102,7 +101,7 @@ class Stats():
         """!top num statname - returns the top x performances of the selected stat."""
         try:
             stat = stat_name.lower()
-            rounded_sheet = wdl.all_rounds.round(decimals=2)
+            rounded_sheet = lb.all_rounds.round(decimals=2)
             # top_sheet = all_rounds.nlargest(num, stat)
             # stat = lb.stat_dict[statname.lower()]
             top_sheet = rounded_sheet.sort_values(stat, ascending=False).head(num)[[stat, "sid"]]
@@ -116,7 +115,7 @@ class Stats():
         """!least num statname - returns the bottom x performances of the selected stat."""
         try:
             stat = stat_name.lower()
-            rounded_sheet = wdl.all_rounds.round(decimals=2)
+            rounded_sheet = lb.all_rounds.round(decimals=2)
             least_sheet = rounded_sheet.sort_values(stat).head(num)[[stat]]
             await self.bot.say("```{}```".format(least_sheet))
         except KeyError:
@@ -127,7 +126,7 @@ class Stats():
         """!avg statname - returns the all-time average of the selected stat."""
         try:
             stat = stat_name.lower()
-            stat_mean = wdl.all_rounds[stat].mean()
+            stat_mean = lb.all_rounds[stat].mean()
             stat_mean_round = round(stat_mean, 2)
             await self.bot.say("All time average {} per round: {}".format(stat.capitalize(), stat_mean_round))
 
@@ -137,19 +136,19 @@ class Stats():
     @commands.command()
     async def map(self, num: float):
         """!map num - returns info and statistics for the selected map."""
-        if num not in wdl.map_data.index:
+        if num not in lb.map_data.index:
             num_int = int(num)
             await self.bot.say("```Map {} has not been played in the WDL :(```".format(num_int))
 
-        elif num in wdl.map_data.index:
-            map_name = wdl.map_data.loc[num, "Map Name"]
-            map_wad = wdl.map_data.loc[num, "Source Wad"]
-            map_rat = wdl.map_data.loc[num, "RAT"]
+        elif num in lb.map_data.index:
+            map_name = lb.map_data.loc[num, "Map Name"]
+            map_wad = lb.map_data.loc[num, "Source Wad"]
+            map_rat = lb.map_data.loc[num, "RAT"]
             map_rat_round = round(map_rat, 2)
-            map_frags = wdl.map_data.loc[num, "FRG"]
+            map_frags = lb.map_data.loc[num, "FRG"]
             map_frags_round = round(map_frags, 2)
-            map_games = wdl.map_data.loc[num, "GP"]
-            map_points_pergame = wdl.map_data.loc[num, "POINTS"]
+            map_games = lb.map_data.loc[num, "GP"]
+            map_points_pergame = lb.map_data.loc[num, "POINTS"]
             map_points_round = round(map_points_pergame, 2)
             await self.bot.say("**{}** from {} \n\n{} games taken place \nAvg Frags per player - {}\n"
                     "Avg Points per game - {}\nAvg RAT - {}".format(map_name,
