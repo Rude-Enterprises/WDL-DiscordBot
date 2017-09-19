@@ -9,15 +9,15 @@ from discord.ext import commands
 bot = commands.Bot(command_prefix="!", description="Hello I am a bot ! beepboop.")
 
 async def gametime_checker():
-        """Background Process to alert the channel if there is a game today. Runs every 12 hours"""
+    """Background Process to alert the channel if there is a game today. Runs every 12 hours"""
 
-        await bot.wait_until_ready()
-        counter = 0
-        channel = discord.Object(id="157946982567116800")
-        http = aiohttp.ClientSession()
+    await bot.wait_until_ready()
 
+    channel = discord.Object(id="157946982567116800")
+    http = aiohttp.ClientSession()
+
+    try:
         while not bot.is_closed:
-            counter += 1
 
             # regexs for gametime_checker
             gametime_str = r"Gametime:\s[\w]+,\s[\w]{3}\s[0-9]+\s@\s[0-9]+:[0-9][0-9]PM\sEST"
@@ -78,7 +78,35 @@ async def gametime_checker():
             # task runs every 12 hours
             await asyncio.sleep(43200)
 
+    # if task is cancelled
+    finally:
         await http.close()
 
+
+
 async def new_homepage_post():
-    pass
+    """Background Process to alert the channel if there is a game today. Runs every 12 hours"""
+
+    await bot.wait_until_ready()
+
+    channel = discord.Object(id="157946982567116800")
+    http = aiohttp.ClientSession()
+
+    try:
+        while not bot.is_closed:
+
+            # Processing WDL.org with BS
+            resp = await http.get("http://doomleague.org/")
+            sauce = await resp.text()
+            soup = bs.BeautifulSoup(sauce, "lxml")
+            print(soup.text)
+
+
+            # task runs every 12 hours
+            await asyncio.sleep(43200)
+
+    # if task is cancelled
+    finally:
+        await http.close()
+
+
