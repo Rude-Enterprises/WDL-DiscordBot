@@ -32,8 +32,9 @@ async def on_message(message):
 
     #bot will only work in WDL, Odamex, and testing channels
     if (message.channel.id != cfg.wdl_stats_channelid and
-            message.channel.id != cfg.odamex_general_channelid and
-            message.channel.id != cfg.bot_test_channelid):
+        message.channel.id != cfg.wdl_general_channelid and
+        message.channel.id != cfg.odamex_general_channelid and
+        message.channel.id != cfg.bot_test_channelid):
         return
 
     #PLAYER LIFETIME STATS !<player> <stat>
