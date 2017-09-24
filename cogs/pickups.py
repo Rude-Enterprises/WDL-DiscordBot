@@ -18,17 +18,15 @@ class Pickups():
 
         if len(player_set) == players_for_priv:
             player_mentions = ", ".join([all.mention for all in player_set])
-            await self.bot.say("""{} your game is ready! Join the FUCKING SERVER"""
-                               """ password = season4""".format(player_mentions))
+            await self.bot.say("{} your game is ready! Odamex 74.91.112.85:10673".format(player_mentions))
             while player_set:
                 player_set.pop()
         else:
-            await self.bot.say("({}/{}) added, {} more needed for Priv CTF.".format(
-                len(player_set), players_for_priv, (players_for_priv - len(player_set))))
+            await self.bot.say("*CTF*({}/{}) added.".format(len(player_set), players_for_priv))
         await asyncio.sleep(3600)
         try:
             player_set.remove(ctx.message.author)
-            await self.bot.say("{} has been removed from queue".format(ctx.message.author))
+            await self.bot.say("*CTF*({}/{})".format(len(player_set), players_for_priv))
         except KeyError:
             pass
 
@@ -38,9 +36,7 @@ class Pickups():
 
         player_set.remove(ctx.message.author)
 
-        await self.bot.say("""You have been removed from the queue."""
-                           """ CTF ({}/{})""".format(len(player_set),
-                                                     players_for_priv))
+        await self.bot.say("*CTF*({}/{})".format(len(player_set), players_for_priv))
 
     @commands.command(pass_context=True)
     async def who(self):
