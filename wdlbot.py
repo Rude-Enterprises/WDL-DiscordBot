@@ -1,12 +1,11 @@
-import sys
-import os
-from discord.ext import commands
-import libraries as lb
 import cfg
 import discord
-from cogs import process
+from discord.ext import commands
+import libraries as lb
+import os
+import sys
 
-initial_extensions = ["misc", "stats", "webcmds", "pickups"]
+initial_extensions = ["misc", "stats", "webcmds", "pickups", "process"]
 
 bot = commands.Bot(command_prefix="!", description="Hello I am a bot ! beepboop.")
 bot.remove_command("help")
@@ -16,10 +15,9 @@ async def on_ready():
     print("Logged in as")
     print(bot.user.name)
     print(bot.user.id)
-    print("------")
+    print("------------------")
     print("Onward and Upward")
-    print("------")
-
+    print("------------------")
 
 @bot.event
 async def on_message(message):
@@ -31,10 +29,7 @@ async def on_message(message):
     player_name = message_lower_split[0][1:]
 
     #bot will only work in WDL, Odamex, and testing channels
-    if (message.channel.id != cfg.wdl_stats_channelid and
-        message.channel.id != cfg.wdl_general_channelid and
-        message.channel.id != cfg.odamex_general_channelid and
-        message.channel.id != cfg.bot_test_channelid):
+    if message.channel.id not in cfg.channel_list:
         return
 
     #PLAYER LIFETIME STATS !<player> <stat>
@@ -57,8 +52,8 @@ async def on_message(message):
         team_dict_inv_key = (team_acronym + " " + str(message_lower_split[1]))
 
         if team_dict_inv_key not in lb.team_dict_inverse:
-            await bot.send_message(message.channel, "No team {} found for Season {}".format(team_acronym_upper,
-                                                                                            message_split[1]))
+            await bot.send_message(message.channel, "No team {} found for Season {}".format(
+                team_acronym_upper, message_split[1]))
         else:
             team_stat = lb.team_stats.loc[lb.team_dict_inverse[team_dict_inv_key], message_lower_split[2]]
             team_stat_round = round(team_stat, 2)
@@ -77,10 +72,9 @@ async def on_message(message):
 
 if __name__ == "__main__":
 
-    sys.path.insert(1, os.getcwd() + "/cogs/")  # this allows the cogs in the cogs folder to be loaded
+    sys.path.insert(1, os.getcwd() + "/cogs/")
 
     for extension in initial_extensions:
-        bot.load_extension(extension)  # This adds the cogs listed in initial_extensions to the bot
+        bot.load_extension(extension)
 
-    bot.loop.create_task(process.gametime_checker())
     bot.run(cfg.TOKEN)
