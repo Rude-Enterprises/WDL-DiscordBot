@@ -49,7 +49,7 @@ team_stats_column_names = ["team", "rat", "orat",
                            "wins", "losses", "ties"]
 
 #all sheets to be used from Jwarrier's wdlstatsv4 read with Pandas
-workbook = pd.ExcelFile("C:/Users/Jesse/Desktop/WDLSTATSv4.xlsx")
+workbook = pd.ExcelFile("WDLSTATSv4.xlsx")
 player_totals = pd.read_excel(workbook, "PT Player Totals", names=player_totals_column_names)
 player_avg = pd.read_excel(workbook, "PT PlayerAVG")
 all_time_playoff = pd.read_excel(workbook, "ALL TIME Playoffs", skiprows=[0], names=alltime_playoff_column_names)
@@ -143,5 +143,7 @@ team_dict_two = {"!add": "Adderall Drunk Drivers",
                  "!sdm": "Super Dank Memes",
                  "!tkv": "Techno Vikings",
                  "!hfm": "High Friction Men",
-                 "!hyp": "Hurt You Plenty"
+                 "!hyp": "Hurt You Plenty",
+                 "!dem": "Damn!",
+                 "!tpt": "The Phantom Troupe"
                  }
