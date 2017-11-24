@@ -104,7 +104,9 @@ class Stats():
             rounded_sheet = lb.all_rounds.round(decimals=2)
             # top_sheet = all_rounds.nlargest(num, stat)
             # stat = lb.stat_dict[statname.lower()]
-            top_sheet = rounded_sheet.sort_values(stat, ascending=False).head(num)[[stat, "sid"]]
+            top_sheet = rounded_sheet.sort_values(stat, ascending=False)
+            top_sheet = top_sheet.drop_duplicates(subset="nick", keep="first").head(num)[["nick", stat, "sid"]]
+            top_sheet = top_sheet.to_string(index=False, justify="left")
             # top_sheet_rounded = top_sheet.round(decimals=2)
             await self.bot.say("```{}```".format(top_sheet))
         except KeyError:
@@ -116,7 +118,9 @@ class Stats():
         try:
             stat = stat_name.lower()
             rounded_sheet = lb.all_rounds.round(decimals=2)
-            least_sheet = rounded_sheet.sort_values(stat).head(num)[[stat]]
+            least_sheet = rounded_sheet.sort_values(stat)
+            least_sheet = least_sheet.drop_duplicates(subset="nick", keep="first").head(num)[["nick", stat, "sid"]]
+            least_sheet = least_sheet.to_string(index=False, justify="left")
             await self.bot.say("```{}```".format(least_sheet))
         except KeyError:
             pass
@@ -130,6 +134,16 @@ class Stats():
             stat_mean_round = round(stat_mean, 2)
             await self.bot.say("All time average {} per round: {}".format(stat.capitalize(), stat_mean_round))
 
+        except KeyError:
+            pass
+
+    @commands.command()
+    async def total(self, stat_name: str):
+        """The sum of a stat through every round"""
+        try:
+            stat = stat_name.lower()
+            stat_sum = lb.all_rounds[stat].sum()
+            await self.bot.say("Total {}: {}".format(stat.capitalize(), int(stat_sum)))
         except KeyError:
             pass
 
