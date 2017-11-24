@@ -34,7 +34,6 @@ async def on_message(message):
 
     #PLAYER LIFETIME STATS !<player> <stat>
     elif player_name in lb.player_totals.index and message_lower_split[1] in lb.player_totals.columns:
-
         try:
             player_stat = lb.player_totals.ix[player_name, message_lower_split[1]]
             player_stat_round = round(player_stat, 2)
@@ -43,6 +42,12 @@ async def on_message(message):
 
         except discord.ext.commands.errors.CommandNotFound:
             pass
+
+    #Player lifetime death stat (not in excel player_totals sheet)
+    elif message_lower_split[1] == "deaths" and len(message_split) == 2:
+        sum_deaths = lb.all_rounds.loc[lb.all_rounds["nick"] == message_split[0][1:], "deaths"].sum()
+        await bot.send_message(message.channel, "```{} lifetime {}: {} ```".format(
+            message_split[0][1:], message_lower_split[1], int(sum_deaths)))
 
     #TEAM SEASON STATS  !<team> <number> <stat>
     elif message_lower_split[0] in lb.team_dict_two and len(message_lower_split) == 3:
