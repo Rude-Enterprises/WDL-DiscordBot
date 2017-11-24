@@ -17,7 +17,7 @@ class Process():
         http = aiohttp.ClientSession()
 
         # regexs for gametime_checker
-        gametime_str = r"Gametime:\s[\w]+(,\s|\s)[\w]{3}\s[0-9]+\s@\s[0-9]+:[0-9][0-9]PM\sEST"
+        gametime_str = r"Gametime:\s[\w]+(,\s|\s)[\w]{3}\s[0-9]+\s@\s[0-9]+:[0-9][0-9](|PM)\sEST"
         playoff_gametime_re = r"Gametime:\s[\w]+,\s[\w]{3}\s[0-9]+\s@\s[0-9]+:[0-9][0-9]PM\sEDT"
         playoff_team_re = r"#[0-9]\s[\w\s]+\s\[...\]\s\(MAP[0-9]+\)"
         team_str = r"(([\w]+)|[Damn!]){1,3}\s\[...\]"
@@ -32,12 +32,17 @@ class Process():
                 game_times = soup.find_all(text=re.compile(gametime_str))
                 game_times_playoffs = soup.find_all(text=re.compile(playoff_gametime_re))
 
-                for i in range(0, len(game_times)):
-                    if "," not in game_times[i]:
-                        temp_list = game_times[i].split()
-                        temp_list[1] = temp_list[1] + ","
-                        game_times[i] = " ".join(temp_list)
 
+                print(game_times)
+                for i in range(0, len(game_times)):
+                    temp_list = game_times[i].split()
+                    if "," not in game_times[i]:
+                        temp_list[1] = temp_list[1] + ","
+                    if "PM" not in game_times[i]:
+                        temp_list[5] = temp_list[5] + "PM"
+                    game_times[i] = " ".join(temp_list)
+
+                print(game_times)
                 # lists of all found gametime regexs, regular season, and playoffs
                 matchups = soup.find_all(text=re.compile(team_str))
                 playoff_matchups = soup.find_all(text=re.compile(playoff_team_re))
@@ -50,12 +55,20 @@ class Process():
                 # gametime regex's converted to datetime objects
                 for regexs in game_times:
                     date_objects.append(datetime.strptime(regexs, "Gametime: %A, %b %d @ %I:%M%p EST"))
-
+                print(date_objects)
                 for regexs in game_times_playoffs:
                     date_obj_playoffs.append(datetime.strptime(regexs, "Gametime: %A, %b %d @ %I:%M%p EDT"))
 
                 tday = datetime.today()
+                for obj in date_objects:
+                    print("**{} vs {}** - today {}/{} at {:%I:%M%p} EST!".format(
+                            matchups[(date_objects.index(obj) * 2)],
+                            matchups[(date_objects.index(obj) * 2) + 1],
+                            obj.month,
+                            obj.day,
+                            obj))
                 #checking if there is a game today
+
                 for obj in date_objects:
                     if obj.day == tday.day and obj.month == tday.month and tday.hour < obj.hour:
                         await self.bot.send_message(channel, "**{} vs {}** - today {}/{} at {:%I:%M%p} EST!".format(
