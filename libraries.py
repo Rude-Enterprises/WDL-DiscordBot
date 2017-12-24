@@ -49,7 +49,7 @@ team_stats_column_names = ["team", "rat", "orat",
                            "wins", "losses", "ties"]
 
 #all sheets to be used from Jwarrier's wdlstatsv4 read with Pandas
-workbook = pd.ExcelFile("WDLSTATSv4.xlsx")
+workbook = pd.ExcelFile("C:/Users/Jesse/PycharmProjects/WDL-DiscordBot/WDLSTATSv4.xlsx")
 player_totals = pd.read_excel(workbook, "PT Player Totals", names=player_totals_column_names)
 player_avg = pd.read_excel(workbook, "PT PlayerAVG")
 all_time_playoff = pd.read_excel(workbook, "ALL TIME Playoffs", skiprows=[0], names=alltime_playoff_column_names)
@@ -77,8 +77,7 @@ season3 = rename_dataframe_index_player(season3)
 season2 = rename_dataframe_index_player(season2)
 season1 = rename_dataframe_index_player(season1)
 all_rounds = all_rounds.dropna()
-all_rounds = all_rounds.reset_index().dropna().set_index("nick")
-
+all_rounds = all_rounds.reset_index().dropna()
 
 stat_dict = {"rat": "RAT",
              "orat": "oRAT",
