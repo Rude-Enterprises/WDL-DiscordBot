@@ -22,7 +22,7 @@ class Pickups():
             while player_set:
                 player_set.pop()
         else:
-            await self.bot.say("**CTF**({}/{}) added.".format(len(player_set), players_for_priv))
+            await self.bot.say("**CTF**({}/{}) added".format(len(player_set), players_for_priv))
         await asyncio.sleep(3600)
         try:
             player_set.remove(ctx.message.author)
