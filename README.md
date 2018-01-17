@@ -6,7 +6,7 @@
 
 A Discord bot made for the [World Doom League](http://doomleague.org "WDL")
 
-Many uses include data analysis with pandas + WDL statistics, managing pickup games, and more !   
+Many uses include data analysis of WDL statistics using Pandas, managing pickup games, and more !   
 WDL Bot interacts with **Jwarrier's** comprehensive stats of the WDL, the public google-doc can be found [here](https://docs.google.com/spreadsheets/d/1aNmdUyvBTXN732ONNwZ1l-PrUBxSSLIFK0OjdNBfkrM/edit#gid=2078033722 "Jwarrier's WDLSTATS")  
 
 A few screenshots below:
