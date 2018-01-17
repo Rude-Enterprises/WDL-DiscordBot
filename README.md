@@ -3,7 +3,6 @@
 <p align="center">
 <h1> WDL-DiscordBot</h1>
 </p>
-<p align="center"> **work in progress**</p>
 
 A Discord bot made for the [World Doom League](http://doomleague.org "WDL")
 
@@ -12,7 +11,7 @@ WDL Bot interacts with **Jwarrier's** comprehensive stats of the WDL, the public
 
 A few screenshots below:
 
-Automated Announcements:  
+Web Scraping/Automated Announcements:  
 ![gameannounce](https://cloud.githubusercontent.com/assets/24723883/26137334/7cd7ca38-3a8f-11e7-82e9-dc188b8a5a93.jpg)  
 Stats:  
 ![topfrags](https://cloud.githubusercontent.com/assets/24723883/26137520/9dde021e-3a90-11e7-882b-2a7a1e9271e8.jpg)  
