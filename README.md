@@ -12,9 +12,9 @@ WDL Bot interacts with **Jwarrier's** comprehensive stats of the WDL, the public
 A few screenshots below:
 
 Web Scraping/Automated Announcements:  
-![gameannounce](https://cloud.githubusercontent.com/assets/24723883/26137334/7cd7ca38-3a8f-11e7-82e9-dc188b8a5a93.jpg)  
+![announcement](https://user-images.githubusercontent.com/24723883/35108157-c58de276-fc40-11e7-97af-b1db097c12c1.jpg)   
 Stats:  
-![stats2](https://user-images.githubusercontent.com/24723883/35107913-288a7674-fc40-11e7-83cb-bbe1df78e492.jpg)
+![stats2](https://user-images.githubusercontent.com/24723883/35107913-288a7674-fc40-11e7-83cb-bbe1df78e492.jpg)  
 Pickup Management:  
 ![priv2](https://cloud.githubusercontent.com/assets/24723883/26137528/a87452f0-3a90-11e7-9f3a-923d3582eea2.jpg)
 
